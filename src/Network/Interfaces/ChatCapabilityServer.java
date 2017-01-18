@@ -1,7 +1,7 @@
-package connect4;
+package Network.Interfaces;
 
 public interface ChatCapabilityServer {
 	
-	public void cmdBroadcastMessage(String msg);
+	void cmdBroadcastMessage(String msg);
 
 }

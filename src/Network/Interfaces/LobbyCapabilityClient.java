@@ -1,6 +1,6 @@
-package connect4;
+package Network.Interfaces;
 
 public interface LobbyCapabilityClient {
 	
-	public void cmdInvite(int desiredOpponentID);
+	void cmdInvite(int desiredOpponentID);
 }

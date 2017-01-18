@@ -1,6 +1,6 @@
-package connect4;
+package Network.Interfaces;
 
 public interface ScoreboardCapabilityClient {
 
-	public void getScoreboard();
+	void getScoreboard();
 }

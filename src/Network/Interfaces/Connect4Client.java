@@ -1,4 +1,4 @@
-package connect4;
+package Network.Interfaces;
 
 public interface Connect4Client {
 
@@ -12,7 +12,7 @@ public interface Connect4Client {
 	 * for the associated capability.
 	 * @param isAI <code>true</code> indicates that the user that is registering is a computer player. <code>false</code> indicates a human player.
 	 */
-	public void cmdHello(String username, int clientCapabilities, boolean isAI);
+    void cmdHello(String username, int clientCapabilities, boolean isAI);
 	
 	/** 
 	 * The x and y coordinate of the desired move. The coordinate system is defined as follows: <br>
@@ -29,5 +29,5 @@ public interface Connect4Client {
 	 * @param x the x coordinate of the move
 	 * @param y the y coordinate of the move
 	 */
-	public void cmdMove(int x, int y);
+    void cmdMove(int x, int y);
 }

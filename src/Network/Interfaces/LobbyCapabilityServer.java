@@ -1,11 +1,11 @@
-package connect4;
+package Network.Interfaces;
 
 public interface LobbyCapabilityServer {
 	
-	public void cmdPlayerConnect(int newPlayerID, String newPlayerUsername);
+	void cmdPlayerConnect(int newPlayerID, String newPlayerUsername);
 	
-	public void cmdPlayerDisconnect(int discPlayerID);
+	void cmdPlayerDisconnect(int discPlayerID);
 	
-	public void cmdRequest(int challengerID);
+	void cmdRequest(int challengerID);
 
 }

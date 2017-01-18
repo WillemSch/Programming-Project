@@ -1,6 +1,6 @@
-package connect4;
+package Network.Interfaces;
 
 public interface ChatCapabilityClient {
 
-	public void cmdChat(String msg);
+	void cmdChat(String msg);
 }

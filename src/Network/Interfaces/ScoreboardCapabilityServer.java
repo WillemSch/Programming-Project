@@ -1,8 +1,8 @@
-package connect4;
+package Network.Interfaces;
 
 public interface ScoreboardCapabilityServer {
 
-	public void cmdSendScoreboardEntry(int id, String name, int score);
+	void cmdSendScoreboardEntry(int id, String name, int score);
 	
-	public void cmdEndOfScoreboardTransmission();
+	void cmdEndOfScoreboardTransmission();
 }
