@@ -1,4 +1,4 @@
-package Network;
+package network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class ClientHandeler extends Thread{
     }
 
     public void Send(String message){
-        writer.write(message);
+        writer.println(message);
         writer.flush();
     }
 
@@ -60,7 +60,10 @@ public class ClientHandeler extends Thread{
         try {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(name + " " + line);
+                if(line.split(" ")[0].equals(HELLO)){
+                    writer.println(WELCOME);
+                    writer.flush();
+                }
             }
         } catch (IOException e){
             e.printStackTrace();

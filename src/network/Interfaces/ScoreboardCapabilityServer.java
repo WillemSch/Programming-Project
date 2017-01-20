@@ -1,4 +1,4 @@
-package Network.Interfaces;
+package network.Interfaces;
 
 public interface ScoreboardCapabilityServer {
 

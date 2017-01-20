@@ -1,6 +1,6 @@
-package Network;
+package network;
 
-import Network.Interfaces.Connect4Server;
+import network.Interfaces.Connect4Server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
