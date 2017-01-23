@@ -51,4 +51,12 @@ public class Game {
 			System.out.println("Draw. There is no winner!");
 		}
 	}
+
+    /**
+     * Forces the game to crown one person as winner, in case ssomeone gets kicked or disconnected
+     * @param player a <code>Player</code> that will be crowned winner.
+     */
+	public void forceWinner(Player player){
+        System.out.println("Speler " + player.getName() + " (" + player.getMark().toString() + ") has won!");
+    }
 }
