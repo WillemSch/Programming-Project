@@ -40,9 +40,8 @@ public class Client extends Thread implements Connect4Client {
      * @param id An <code>int</code> with the value of the id of the player. This id is unique on the server.
      * @param ai A <code>Boolean</code> which says whether the player is an ai or not.
      * @param player A <code>Player</code> belonging to the player of this client.
-     * @param board A <code>Board</code> to locally keep track of the games progress and to determine moves.
      */
-    public Client(Socket socket, String name, int id, boolean ai, Player player, Board board) {
+    public Client(Socket socket, String name, int id, boolean ai, Player player) {
         this.socket = socket;
         this.name = name;
         this.id = id;
@@ -75,22 +74,22 @@ public class Client extends Thread implements Connect4Client {
             try {
                 server = new Socket(args[1], Integer.parseInt(args[2]));
                 Client client;
-                Board board = new Board();
                 Player player;
                 switch (args[0]){
                     case "-S":
-                        player = new ComputerPlayer("Smart computer", board, "red",
-                                new SmartStrategy());
-                        client = new Client(server, "Smart computer", 1, true, player, board);
+                        //TODO: FIX SHIT
+                        player = new ComputerPlayer(Mark.OO, new SmartStrategy());
+                        client = new Client(server, "Smart computer", 1, true, player);
                         break;
                     case "-N":
-                        player = new ComputerPlayer("Naive computer", board, "red",
-                                new NaiveStrategy());
-                        client = new Client(server, "Naive computer", 1, true, player, board);
+                        //TODO: FIX SHIT
+                        player = new ComputerPlayer(Mark.OO, new NaiveStrategy());
+                        client = new Client(server, "Naive computer", 1, true, player);
                         break;
                     default:
-                        player = new HumanPlayer(args[1], board, "red");
-                        client = new Client(server, args[0], 1, false, player, board);
+                        //TODO: FIX SHIT
+                        player = new HumanPlayer(args[1], Mark.OO);
+                        client = new Client(server, args[0], 1, false, player);
                         break;
                 }
                 client.start();
