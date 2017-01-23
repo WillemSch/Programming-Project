@@ -37,12 +37,11 @@ public class Client extends Thread implements Connect4Client {
      * The constructor of the client.
      * @param socket The <code>Socket</code> through which the communication is send and recieved.
      * @param name A <code>String</code> with the username of the player.
-     * @param id An <code>int</code> with the value of the id of the player. This id is unique on the server.
      * @param ai A <code>Boolean</code> which says whether the player is an ai or not.
      * @param player A <code>Player</code> belonging to the player of this client.
      * @param board A <code>Board</code> to locally keep track of the games progress and to determine moves.
      */
-    public Client(Socket socket, String name, int id, boolean ai, Player player, Board board) {
+    public Client(Socket socket, String name, boolean ai, Player player) {
         this.socket = socket;
         this.name = name;
         this.id = id;
@@ -75,22 +74,22 @@ public class Client extends Thread implements Connect4Client {
             try {
                 server = new Socket(args[1], Integer.parseInt(args[2]));
                 Client client;
-                Board board = new Board();
                 Player player;
                 switch (args[0]){
                     case "-S":
-                        player = new ComputerPlayer("Smart computer", board, "red",
-                                new SmartStrategy());
-                        client = new Client(server, "Smart computer", 1, true, player, board);
+                        //TODO: Fix marks
+                        player = new ComputerPlayer(Mark.XX, new SmartStrategy());
+                        client = new Client(server, "Smart computer", true, player);
                         break;
                     case "-N":
-                        player = new ComputerPlayer("Naive computer", board, "red",
-                                new NaiveStrategy());
-                        client = new Client(server, "Naive computer", 1, true, player, board);
+                        //TODO: Fix marks
+                        player = new ComputerPlayer(Mark.XX, new NaiveStrategy());
+                        client = new Client(server, "Naive computer", true, player);
                         break;
                     default:
-                        player = new HumanPlayer(args[1], board, "red");
-                        client = new Client(server, args[0], 1, false, player, board);
+                        //TODO: Fix marks
+                        player = new HumanPlayer(args[1], Mark.OO);
+                        client = new Client(server, args[0], false, player);
                         break;
                 }
                 client.start();
@@ -119,6 +118,8 @@ public class Client extends Thread implements Connect4Client {
                                 id = Integer.parseInt(words[1]);
                                 thinkingTime = Long.parseLong(words[2]);
                                 serverCapabilities = Integer.parseInt(words[3]);
+                            } else {
+                                System.out.println("Received invalid command from server");
                             }
                             break;
                         case "GAME":
@@ -131,6 +132,8 @@ public class Client extends Thread implements Connect4Client {
                                 fieldsize[2] = Integer.parseInt(words[5]);
                                 turnOfId = Integer.parseInt(words[6]);
                                 winLenght = Integer.parseInt(words[7]);
+                            } else {
+                                System.out.println("Received invalid command from server");
                             }
                             break;
                         case "GAMEEND":
@@ -139,17 +142,25 @@ public class Client extends Thread implements Connect4Client {
                             } else if (words.length == 2 && words[1].equals(String.valueOf(opponentId))){
                                 System.out.println("You lost...");
                             } else {
-                                System.out.println("Something went terribly wrong...");
+                                System.out.println("Game ended with a mystery winner");
                             }
                             break;
                         case "MOVESUCCESS":
-                            //TODO: check id, if from other player change Board and start determineMove()
+                            if (words.length == 5 && words[2].matches("\\d+") && words[3].matches("\\d+")
+                                    && words[4].matches("\\d+")){
+                                //TODO: Calculate needed z value, and convert words[3] to a mark
+                                board.setField(Integer.parseInt(words[1]), Integer.parseInt(words[2]), 1, Mark.OO);
+                                turnOfId = Integer.parseInt(words[4]);
+                            } else {
+                                System.out.println("Received invalid command from server");
+                            }
                             break;
                         case "PLAYERLEFT":
                             //TODO: if player is yourself or opponent quit game state
                             break;
                         case "REPORTILLEGAL":
-                            //TODO: if its the last move command of this player restart determinemove, and notify player
+                            //This should NEVER happen!
+                            System.out.println("Something went terribly wrong...");
                             break;
                         default:
                             System.out.println(line);
