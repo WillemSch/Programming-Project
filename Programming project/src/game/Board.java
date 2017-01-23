@@ -85,11 +85,11 @@ public class Board {
 	}
 
 	public boolean hasColumn(Mark m) {
-
+		return false;
 	}
 
 	public boolean hasDiagonal(Mark m) {
-
+		return false;
 	}
 
 	public boolean hasWinner() {
@@ -109,7 +109,7 @@ public class Board {
 	}
 
 	public String toString() {
-
+		return "";
 	}
 
 	public void reset() {

@@ -10,7 +10,8 @@ public class SmartStrategy implements Strategy {
     }
 
     @Override
-    public int determineMove(Board board, Mark mark) {
-        return 0;
+    public Integer[] determineMove(Board board, Mark mark) {
+    	Integer[] coordinates = {0,0,0};
+        return coordinates;
     }
 }

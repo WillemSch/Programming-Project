@@ -35,7 +35,7 @@ public class ComputerPlayer extends Player {
     //@ requires board != null;
     //@ ensures \result >= 0;
     public Integer[] determineMove(Board board) {
-        int choice = strategy.determineMove(board, super.getMark());
+        Integer[] choice = strategy.determineMove(board, super.getMark());
         String prompt = "> " + getName() + " (" + getMark().toString() + ")"
                 + ", chooses " + choice + ".";
         System.out.println(prompt);
