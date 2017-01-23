@@ -22,6 +22,7 @@ public class Board {
 			this.heigth = heigth;
 		}
 		this.heigth = heigth;
+		this.players = players;
 		this.fields = new HashMap<Integer[], Mark>();
 	}
 
@@ -34,6 +35,7 @@ public class Board {
 			this.heigth = heigth;
 		}
 		this.winLength = winLength;
+		this.players = players;
 		this.fields = new HashMap<Integer[], Mark>();
 	}
 
@@ -51,6 +53,10 @@ public class Board {
 
 	public int getWinLength() {
 		return winLength;
+	}
+	
+	public Player[] getPlayers() {
+		return players;
 	}
 
 	public Board deepCopy() {

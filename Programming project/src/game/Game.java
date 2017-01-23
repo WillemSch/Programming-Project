@@ -10,13 +10,9 @@ public class Game {
 
 	private int current;
 
-	public Game(Player[] players) {
-		numberOfPlayers = players.length;
-		board = new Board(board.getLength(), board.getWidth(), board.getHeigth(), board.getWinLength(), players);
-		this.players = new Player[numberOfPlayers];
-		for (int i = 0; i < numberOfPlayers; i++) {
-			this.players[i] = players[i];
-		}
+	public Game(Board board) {
+		this.board = board;
+		this.players = board.getPlayers();
 		current = 0;
 	}
 
