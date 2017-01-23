@@ -1,4 +1,4 @@
-package connectFour;
+package game;
 
 /**
  * Abstract class for keeping a player in the Connect Four game. 

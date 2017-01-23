@@ -1,4 +1,4 @@
-package connectFour;
+package game;
 
 public class Game {
 

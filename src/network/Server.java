@@ -7,13 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by willem on 18-1-17.
+ * @Author Willem Schooltink
+ * @Version 1.0.0
+ * Starts the server to which clients can connect.
  */
 public class Server {
 
     private static final String USAGE = "usage: <port>";
     private static List<ClientHandeler> clients;
 
+    /**
+     * The main function which initiates the Server and starts the acceptor in a new thread.
+     * @param args
+     */
     public static void main(String[] args){
         args = new String[] {"4040"};
 
@@ -28,6 +34,10 @@ public class Server {
         acceptor.start();
     }
 
+    /**
+     * Waits for requests of clients connecting, accepts them and creates a new <code>ClientHandeler</code> for the client
+     * @param port an <code>int</code> which represents the port being used.
+     */
     private static void acceptClient(int port){
         try {
             ServerSocket server = new ServerSocket(port);
@@ -44,6 +54,10 @@ public class Server {
         }
     }
 
+    /**
+     * Sends a given string to all connected clients.
+     * @param message A <code>String</code> with the message which is to be send.
+     */
     private static void broadCast(String message){
         for (ClientHandeler c : clients){
             c.send(message);

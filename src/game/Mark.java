@@ -1,4 +1,4 @@
-package connectFour;
+package game;
 
 /**
  * Represents a mark in the Connect Four game. There three possible values:

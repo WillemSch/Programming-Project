@@ -1,4 +1,4 @@
-package connectFour;
+package game;
 
 /**
  * Created by willem on 20-12-16.
