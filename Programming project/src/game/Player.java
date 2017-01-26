@@ -73,7 +73,7 @@ public abstract class Player {
      */
     public void makeMove(Board board) {
         Integer[] move = determineMove(board);
-        board.setField(move[0], move[1], move[2], getMark());
+        board.setField(move, getMark());
     }
 
 }

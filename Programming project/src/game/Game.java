@@ -17,9 +17,8 @@ public class Game {
 	}
 
 	public void start() {
-		reset();
 		play();
-
+		reset();
 	}
 
 	private void reset() {
@@ -31,8 +30,7 @@ public class Game {
 		Player currPlayer = players[current];
 		while (!board.gameOver()) {
 			update();
-			board.setField(currPlayer.determineMove(board)[0], currPlayer.determineMove(board)[1],
-					currPlayer.determineMove(board)[2], currPlayer.getMark());
+			board.setField(currPlayer.determineMove(board), currPlayer.getMark());
 			current = (current + 1) % numberOfPlayers;
 			currPlayer = players[current];
 		}
