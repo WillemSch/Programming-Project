@@ -133,6 +133,7 @@ public class Board {
 				return i - 1;
 			}
 		}
+		return -1;
 	}
 
 	public boolean setField(int x, int y, Mark m){
@@ -147,6 +148,6 @@ public class Board {
 	}
 
 	public boolean isValidMove(int x, int y, int z){
-		return (x < width && y < length && z < heigth);
+		return (x < width && y < length && z < heigth && z != -1);
 	}
 }
