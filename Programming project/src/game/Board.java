@@ -469,8 +469,23 @@ public class Board {
 		this.fields = new HashMap<Integer[], Mark>();
 	}
 
-	public void setField(Integer[] coordinates, Mark m) {
+	public boolean setField(Integer[] coordinates, Mark m) {
 		lastMove = coordinates;
 		fields.put(coordinates, m);
+		return fields.containsKey(coordinates);
+	}
+
+	public int getHeightOfField(int x, int y) {
+		for (int i = 0; i <= heigth; i++) {
+			Integer[] coordinates = {x,y,i};
+			if (isEmptyField(coordinates)) {
+				return i - 1;
+			}
+		}
+		return -1;
+	}
+
+	public boolean isValidMove(int x, int y, int z){
+		return (x < width && y < length && z < heigth && z != -1);
 	}
 }
