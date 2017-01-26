@@ -11,23 +11,23 @@ public abstract class Player {
     // -- Instance variables -----------------------------------------
 
     private String name;
-    private Mark mark;
+    private Color color;
 
     // -- Constructors -----------------------------------------------
 
     /*@
        requires name != null;
-       requires mark == Mark.XX || mark== Mark.OO;
+       requires color == Color.RED || color== Color.BLUE;
        ensures this.getName() == name;
-       ensures this.getMark() == mark;
+       ensures this.getColor() == color;
      */
     /**
      * Creates a new Player object.
      * 
      */
-    public Player(String name, Mark mark) {
+    public Player(String name, Color color) {
         this.name = name;
-        this.mark = mark;
+        this.color = color;
     }
 
     // -- Queries ----------------------------------------------------
@@ -40,10 +40,10 @@ public abstract class Player {
     }
 
     /**
-     * Returns the mark of the player.
+     * Returns the color of the player.
      */
-    /*@ pure */ public Mark getMark() {
-        return mark;
+    /*@ pure */ public Color getColor() {
+        return color;
     }
 
     /*@
@@ -73,7 +73,7 @@ public abstract class Player {
      */
     public void makeMove(Board board) {
         Integer[] move = determineMove(board);
-        board.setField(move, getMark());
+        board.setField(move, getColor());
     }
 
 }

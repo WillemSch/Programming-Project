@@ -6,18 +6,18 @@ package game;
 public class ComputerPlayer extends Player {
     private Strategy strategy;
 
-    //@ requires mark != null;
+    //@ requires color != null;
     //@ requires strategy != null;
     //@ ensures getStrategy() instanceOf NaiveStrategy;
-    public ComputerPlayer(Mark mark, Strategy strategy) {
-        super("Computer Player", mark);
+    public ComputerPlayer(Color color, Strategy strategy) {
+        super("Computer Player", color);
         this.strategy = strategy;
     }
 
-    //@ requires mark != null;
+    //@ requires color != null;
     //@ ensures getStrategy() instanceOf NaiveStrategy;
-    public ComputerPlayer(Mark mark) {
-        super("Computer Player", mark);
+    public ComputerPlayer(Color color) {
+        super("Computer Player", color);
         this.strategy = new NaiveStrategy();
     }
 
@@ -35,8 +35,8 @@ public class ComputerPlayer extends Player {
     //@ requires board != null;
     //@ ensures \result >= 0;
     public Integer[] determineMove(Board board) {
-        Integer[] choice = strategy.determineMove(board, super.getMark());
-        String prompt = "> " + getName() + " (" + getMark().toString() + ")"
+        Integer[] choice = strategy.determineMove(board, super.getColor());
+        String prompt = "> " + getName() + " (" + getColor().toString() + ")"
                 + ", chooses " + choice + ".";
         System.out.println(prompt);
         return choice;

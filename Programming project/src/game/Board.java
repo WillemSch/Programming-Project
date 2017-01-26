@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Board {
 
-	private Map<Integer[], Mark> fields;
+	private Map<Integer[], Color> fields;
 
 	private int length;
 	private int width;
@@ -27,7 +27,7 @@ public class Board {
 		this.heigth = heigth;
 		this.winLength = 4;
 		this.players = players;
-		this.fields = new HashMap<Integer[], Mark>();
+		this.fields = new HashMap<Integer[], Color>();
 	}
 
 	public Board(int width, int length, int heigth, int winLength, Player[] players) {
@@ -40,7 +40,7 @@ public class Board {
 		}
 		this.winLength = winLength;
 		this.players = players;
-		this.fields = new HashMap<Integer[], Mark>();
+		this.fields = new HashMap<Integer[], Color>();
 	}
 
 	public int getLength() {
@@ -75,7 +75,7 @@ public class Board {
 		return (x >= 0 && x < width) && (y >= 0 && y < length) && (z >= 0 && z < heigth);
 	}
 
-	public Mark getField(Integer[] coordinates) {
+	public Color getField(Integer[] coordinates) {
 		return fields.get(coordinates);
 	}
 
@@ -91,7 +91,7 @@ public class Board {
 		return (this.isFull() || this.hasWinner());
 	}
 
-	public boolean isWinningMove(Mark m) {
+	public boolean isWinningMove(Color m) {
 		if (lastMove.length == 0) {
 			return false;
 		} else {
@@ -430,7 +430,7 @@ public class Board {
 
 	public boolean hasWinner() {
 		for (Player player : players) {
-			Mark m = player.getMark();
+			Color m = player.getColor();
 			if (isWinner(m)) {
 				return isWinner(m);
 			} 
@@ -438,7 +438,7 @@ public class Board {
 		return false;
 	}
 
-	public boolean isWinner(Mark m) {
+	public boolean isWinner(Color m) {
 		return isWinningMove(m);
 	}
 
@@ -464,16 +464,16 @@ public class Board {
 	}
 
 	public void reset() {
-		this.fields = new HashMap<Integer[], Mark>();
+		this.fields = new HashMap<Integer[], Color>();
 	}
 
-	public boolean setField(Integer[] coordinates, Mark m) {
+	public boolean setField(Integer[] coordinates, Color m) {
 		lastMove = coordinates;
 		fields.put(coordinates, m);
 		return fields.containsKey(coordinates);
 	}
 
-	public boolean setField(int x, int y, Mark m) {
+	public boolean setField(int x, int y, Color m) {
 		int z = getHeightOfField(x, y) + 1;
 		Integer[] coordinates = { x, y, z };
 		if (isField(coordinates)) {

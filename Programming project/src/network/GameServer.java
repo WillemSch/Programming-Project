@@ -1,7 +1,7 @@
 package network;
 
 import game.Board;
-import game.Mark;
+import game.Color;
 
 import java.util.List;
 import java.util.Map;
@@ -12,11 +12,11 @@ import java.util.Map;
  * The controller of a game on the server.
  */
 public class GameServer {
-    private Map<ClientHandeler, Mark> players;
+    private Map<ClientHandeler, Color> players;
     private Board board;
     private int turnOfIndex;
     //TODO: Fix this shit with the marks
-    private static final Mark[] MARKS = {Mark.OO, Mark.XX};
+    private static final Color[] COLORS = {Color.BLUE, Color.RED};
 
     /**
      * The constructor of the <code>GameServer</code> with a dynamic winlenght and board size. Assigns marks to
@@ -28,8 +28,8 @@ public class GameServer {
     public GameServer(List<ClientHandeler> players, int[] boardSize, int winlength){
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
-            //TODO: MARKS --> COLORS
-            this.players.put(c, MARKS[i]);
+            //TODO: COLORS --> COLORS
+            this.players.put(c, COLORS[i]);
             //TODO: Fix last parameter
             this.board = new Board(boardSize[0], boardSize[1], boardSize[2], winlength, board.getPlayers());
         }
@@ -42,8 +42,8 @@ public class GameServer {
     public GameServer(List<ClientHandeler> players){
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
-            //TODO: MARKS --> COLORS
-            this.players.put(c, MARKS[i]);
+            //TODO: COLORS --> COLORS
+            this.players.put(c, COLORS[i]);
             //TODO: Fix last parameter
             this.board = new Board(4,4,4, board.getPlayers());
         }
@@ -56,12 +56,12 @@ public class GameServer {
      * @param player a <code>ClientHandeler</code> of the player making a move.
      */
     public void makeMove(int x, int y, ClientHandeler player){
-        Mark mark = players.get(player);
-        if (board.setField(x, y, mark)){
+        Color color = players.get(player);
+        if (board.setField(x, y, color)){
             for (ClientHandeler c: players.keySet()){
                 //TODO: fix nextID
                 c.cmdMoveSuccess(x, y, player.getClientId(), player.getClientId());
-                if (board.isWinner(mark)){
+                if (board.isWinner(color)){
                     c.cmdGameEnd(player.getClientId());
                 }
             }
