@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+//TODO: DESIGN PROJECT
+
 /**
  * @Author Willem Schooltink
  * @Version 1.0.0
@@ -64,7 +66,7 @@ public class Client extends Thread implements Connect4Client {
      * @param args A <code>String[]</code> which is used to determine the type of player and server. Arguments: <name> <address> <port>
      */
     public static void main(String[] args) {
-        args = new String[]{"name", "localhost", "4040"};
+        args = new String[]{"name", "130.89.180.79", "1234"};
 
         if (args.length != 3) {
             System.out.println(USAGE);
@@ -77,17 +79,17 @@ public class Client extends Thread implements Connect4Client {
                 Player player;
                 switch (args[0]){
                     case "-S":
-                        //TODO: FIX SHIT
+                        //TODO: Fix marks
                         player = new ComputerPlayer(Mark.OO, new SmartStrategy());
                         client = new Client(server, "Smart computer", 1, true, player);
                         break;
                     case "-N":
-                        //TODO: FIX SHIT
+                        //TODO: Fix marks
                         player = new ComputerPlayer(Mark.OO, new NaiveStrategy());
                         client = new Client(server, "Naive computer", 1, true, player);
                         break;
                     default:
-                        //TODO: FIX SHIT
+                        //TODO: Fix marks
                         player = new HumanPlayer(args[1], Mark.OO);
                         client = new Client(server, args[0], 1, false, player);
                         break;
@@ -118,6 +120,9 @@ public class Client extends Thread implements Connect4Client {
                                 id = Integer.parseInt(words[1]);
                                 thinkingTime = Long.parseLong(words[2]);
                                 serverCapabilities = Integer.parseInt(words[3]);
+                                System.out.println(id);
+                            } else {
+                                System.out.println("Something went terribly wrong...");
                             }
                             break;
                         case "GAME":
@@ -130,6 +135,8 @@ public class Client extends Thread implements Connect4Client {
                                 fieldsize[2] = Integer.parseInt(words[5]);
                                 turnOfId = Integer.parseInt(words[6]);
                                 winLenght = Integer.parseInt(words[7]);
+                            } else {
+                                System.out.println("Something went terribly wrong...");
                             }
                             break;
                         case "GAMEEND":
@@ -149,6 +156,7 @@ public class Client extends Thread implements Connect4Client {
                             break;
                         case "REPORTILLEGAL":
                             //TODO: if its the last move command of this player restart determinemove, and notify player
+                            System.out.println(line);
                             break;
                         default:
                             System.out.println(line);
@@ -173,7 +181,7 @@ public class Client extends Thread implements Connect4Client {
      */
     @Override
     public void cmdHello(String username, int clientCapabilities, boolean isAI) {
-        String command = "HELLO " + username + " " + isAI + " " + clientCapabilities;
+        String command = "HELLO " + username + " " + clientCapabilities + " " + isAI;
         writer.println(command);
         writer.flush();
     }

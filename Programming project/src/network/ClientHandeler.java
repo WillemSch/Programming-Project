@@ -21,6 +21,9 @@ public class ClientHandeler extends Thread implements Connect4Server{
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
+    private GameServer game;
+    private static final long humanThinkingTime = 120000;
+    private static final long aiThinkingTime = 2000;
 
     //------------------POSSIBLE-COMMANDS-----------------------
     private static final String HELP = "HELP";
@@ -73,8 +76,35 @@ public class ClientHandeler extends Thread implements Connect4Server{
         try {
             String line;
             while ((line = reader.readLine()) != null) {
-                if(line.split(" ")[0].equals(HELLO)){
-                    cmdWelcome(1,5000, 0);
+                String[] words = line.split(" ");
+                switch (words[0]){
+                    case HELLO:
+                        if(words.length == 4 && words[2].matches("\\d+") && (words[3].equals("true")
+                                || words[3].equals("false"))){
+                            name = words[1];
+                            boolean ai = words[3].equals("true");
+                            System.out.println(ai);
+                            if(ai){
+                                cmdWelcome(nextId, aiThinkingTime, 0);
+                            } else{
+                                cmdWelcome(nextId, humanThinkingTime, 0);
+                            }
+                            Server.addToWaiting(this);
+                        } else {
+                            send(REPORTILLEGAL + " " + line);
+                        }
+                        break;
+                    case MOVE:
+                        if(words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
+                            int x = Integer.parseInt(words[1]);
+                            int y = Integer.parseInt(words[2]);
+                            if (game != null) {
+                                game.makeMove(x, y, this);
+                            }
+                        }
+                        break;
+                    default:
+                        send(REPORTILLEGAL + " " + line);
                 }
             }
         } catch (IOException e){
@@ -158,5 +188,9 @@ public class ClientHandeler extends Thread implements Connect4Server{
         String message = String.format("%1$s %2$d %3$d %4$d", WELCOME, assignedUserID, allowedThinkTime,
                 capabilities);
         send(message);
+    }
+
+    public int getClientId(){
+        return id;
     }
 }
