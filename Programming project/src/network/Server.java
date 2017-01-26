@@ -18,11 +18,11 @@ public class Server {
     private static List<ClientHandeler> waitingClients;
     private static List<GameServer> games;
 
-    //TODO: fix javadoc
     /**
      * The main function which initiates the Server and starts the acceptor in a new thread.
      * @param args
      */
+    //TODO: ask for port, address and name
     public static void main(String[] args){
         args = new String[] {"4040"};
 
@@ -86,5 +86,13 @@ public class Server {
         for (ClientHandeler c : clients){
             c.send(message);
         }
+    }
+
+    /**
+     * Removes a <code>GameServer</code> from games
+     * @param game The <code>GameServer</code> that is to be removed.
+     */
+    public static void removeGame(GameServer game){
+        games.remove(game);
     }
 }

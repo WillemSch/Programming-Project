@@ -61,13 +61,19 @@ public class GameServer {
     public void makeMove(int x, int y, ClientHandeler player){
         Color color = players.get(player);
         int nextPlayerId = new ArrayList<>(players.keySet()).get(turnOfIndex).getClientId();
+        boolean hasWinner = false;
         if (board.setField(x, y, color)){
             for (ClientHandeler c: players.keySet()){
                 c.cmdMoveSuccess(x, y, player.getClientId(), nextPlayerId);
                 if (board.isWinner(color)){
                     c.cmdGameEnd(player.getClientId());
+                    hasWinner = true;
                 }
             }
+        }
+
+        if(hasWinner){
+            Server.removeGame(this);
         }
     }
 
