@@ -16,6 +16,19 @@ public class Board {
 
 	private Integer[] lastMove = {};
 
+	public Board(int width, int length, int heigth) {
+		this.length = length;
+		this.width = width;
+		if (heigth == -1) {
+			this.heigth = Integer.MAX_VALUE;
+		} else {
+			this.heigth = heigth;
+		}
+		this.heigth = heigth;
+		this.winLength = 4;
+		this.fields = new HashMap<Integer[], Color>();
+	}
+
 	public Board(int width, int length, int heigth, Player[] players) {
 		this.length = length;
 		this.width = width;
@@ -429,11 +442,13 @@ public class Board {
 	}
 
 	public boolean hasWinner() {
-		for (Player player : players) {
-			Color m = player.getColor();
-			if (isWinner(m)) {
-				return isWinner(m);
-			} 
+		if(players != null){
+			for (Player player : players) {
+				Color m = player.getColor();
+				if (isWinner(m)) {
+					return isWinner(m);
+				}
+			}
 		}
 		return false;
 	}

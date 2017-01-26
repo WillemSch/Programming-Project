@@ -15,7 +15,6 @@ public class GameServer {
     private Map<ClientHandeler, Color> players;
     private Board board;
     private int turnOfIndex;
-    //TODO: Fix this shit with the marks
     private static final Color[] COLORS = {Color.BLUE, Color.RED};
 
     /**
@@ -28,7 +27,6 @@ public class GameServer {
     public GameServer(List<ClientHandeler> players, int[] boardSize, int winlength){
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
-            //TODO: COLORS --> COLORS
             this.players.put(c, COLORS[i]);
             //TODO: Fix last parameter
             this.board = new Board(boardSize[0], boardSize[1], boardSize[2], winlength, board.getPlayers());
@@ -42,7 +40,6 @@ public class GameServer {
     public GameServer(List<ClientHandeler> players){
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
-            //TODO: COLORS --> COLORS
             this.players.put(c, COLORS[i]);
             //TODO: Fix last parameter
             this.board = new Board(4,4,4, board.getPlayers());
@@ -76,5 +73,9 @@ public class GameServer {
         for(ClientHandeler c : players.keySet()){
             c.send(message);
         }
+    }
+
+    private int nextId() {
+
     }
 }

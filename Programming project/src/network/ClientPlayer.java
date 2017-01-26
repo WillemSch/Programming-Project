@@ -5,7 +5,8 @@ import game.Color;
 import game.Player;
 
 /**
- * Created by willem on 26-1-17.
+ * @author Willem Schooltink
+ * @version 1.0.0
  */
 public class ClientPlayer extends Player{
     private boolean hasNewMove;
@@ -36,11 +37,20 @@ public class ClientPlayer extends Player{
                 e.printStackTrace();
             }
         }
+        //Because the z-value isn't communicated over the network we have to calculate it ourselves
+        int z = board.getHeightOfField(move[0], move[1]);
+        move[2] = z;
+        hasNewMove = false;
         return move;
     }
 
-    public void giveMove(int x, int y, int z){
-        move = new Integer[] {x, y, z};
+    /**
+     * To be called by the Client and say which move has been made.
+     * @param x An <code>int</code> with the x-coordinate of the move.
+     * @param y An <code>int</code> with the y-coordinate of the move.
+     */
+    public void giveMove(int x, int y){
+        move = new Integer[] {x, y, 0};
         hasNewMove = true;
         notifyAll();
     }
