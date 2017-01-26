@@ -124,7 +124,7 @@ public class Board {
 
     public int getHeightOfField(int x, int y){
         for(int i = 0; i <= heigth; i++){
-            if (getField(x,y,i) == null){
+            if (isEmptyField(x,y,i)){
                 return i - 1;
             }
         }
@@ -132,8 +132,13 @@ public class Board {
     }
 
 	public boolean setField(int x, int y, int z, Mark m) {
-		Integer[] coordinates = { x, y, z };
-		fields.put(coordinates, m);
+		if(isValidMove(x, y, z)) {
+            Integer[] coordinates = {x, y, z};
+            fields.put(coordinates, m);
+            return true;
+        } else {
+		    return false;
+        }
 	}
 
 	public boolean setField(int x, int y, Mark m){
