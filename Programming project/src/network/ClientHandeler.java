@@ -159,8 +159,6 @@ public class ClientHandeler extends Thread implements Connect4Server{
                 capabilities);
         send(message);
     }
-<<<<<<< Updated upstream
-=======
 
     /**
      * Returns the id of this client
@@ -169,5 +167,4 @@ public class ClientHandeler extends Thread implements Connect4Server{
     public int getClientId(){
         return id;
     }
->>>>>>> Stashed changes
 }
