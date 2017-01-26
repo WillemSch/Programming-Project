@@ -477,6 +477,13 @@ public class Board {
 
 	public boolean setField(int x, int y, Mark m){
         int z = getHeightOfField(x, y) + 1;
+        if (isValidMove(x, y, z)){
+            Integer[] coordinates = {x, y, z};
+            setField(coordinates, m);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 	public int getHeightOfField(int x, int y) {
