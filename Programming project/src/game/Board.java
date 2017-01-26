@@ -122,18 +122,18 @@ public class Board {
 		this.fields = new HashMap<Integer[], Mark>();
 	}
 
-	public void setField(int x, int y, int z, Mark m) {
+    public int getHeightOfField(int x, int y){
+        for(int i = 0; i <= heigth; i++){
+            if (getField(x,y,i) == null){
+                return i - 1;
+            }
+        }
+        return -1;
+    }
+
+	public boolean setField(int x, int y, int z, Mark m) {
 		Integer[] coordinates = { x, y, z };
 		fields.put(coordinates, m);
-	}
-
-	public int getHeightOfField(int x, int y){
-		for(int i = 0; i <= heigth; i++){
-			if (getField(x,y,i) == null){
-				return i - 1;
-			}
-		}
-		return -1;
 	}
 
 	public boolean setField(int x, int y, Mark m){

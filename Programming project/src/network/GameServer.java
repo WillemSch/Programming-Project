@@ -20,7 +20,9 @@ public class GameServer {
         this.players = players;
     }
 
-    public makeMove(int x, int y, Mark mark){
-        board.setField(x, y, mark);
+    public void makeMove(int x, int y, Mark mark){
+        if (board.setField(x, y, mark)){
+
+        }
     }
 }
