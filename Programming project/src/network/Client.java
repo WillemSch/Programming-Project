@@ -66,7 +66,7 @@ public class Client extends Thread implements Connect4Client {
      * @param args A <code>String[]</code> which is used to determine the type of player and server. Arguments: <name> <address> <port>
      */
     public static void main(String[] args) {
-        args = new String[]{"name", "localhost", "4040"};
+        args = new String[]{"name", "130.89.180.79", "1234"};
 
         if (args.length != 3) {
             System.out.println(USAGE);
@@ -120,6 +120,7 @@ public class Client extends Thread implements Connect4Client {
                                 id = Integer.parseInt(words[1]);
                                 thinkingTime = Long.parseLong(words[2]);
                                 serverCapabilities = Integer.parseInt(words[3]);
+                                System.out.println(id);
                             } else {
                                 System.out.println("Something went terribly wrong...");
                             }
@@ -155,6 +156,7 @@ public class Client extends Thread implements Connect4Client {
                             break;
                         case "REPORTILLEGAL":
                             //TODO: if its the last move command of this player restart determinemove, and notify player
+                            System.out.println(line);
                             break;
                         default:
                             System.out.println(line);
@@ -179,7 +181,7 @@ public class Client extends Thread implements Connect4Client {
      */
     @Override
     public void cmdHello(String username, int clientCapabilities, boolean isAI) {
-        String command = "HELLO " + username + " " + isAI + " " + clientCapabilities;
+        String command = "HELLO " + username + " " + clientCapabilities + " " + isAI;
         writer.println(command);
         writer.flush();
     }

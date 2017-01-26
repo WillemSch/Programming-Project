@@ -21,6 +21,8 @@ public class ClientHandeler extends Thread implements Connect4Server{
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
+    private static final long humanThinkingTime = 120000;
+    private static final long aiThinkingTime = 2000;
 
     //------------------POSSIBLE-COMMANDS-----------------------
     private static final String HELP = "HELP";
@@ -73,8 +75,28 @@ public class ClientHandeler extends Thread implements Connect4Server{
         try {
             String line;
             while ((line = reader.readLine()) != null) {
-                if(line.split(" ")[0].equals(HELLO)){
-                    cmdWelcome(1,5000, 0);
+                String[] words = line.split(" ");
+                switch (words[0]){
+                    case HELLO:
+                        //TODO: send WELCOME and allow for matchmaking
+                        if(words[2].matches("\\d+") && (words[3].equals("true") || words[3].equals("false"))){
+                            name = words[1];
+                            boolean ai = words[3].equals("true");
+                            System.out.println(ai);
+                            if(ai){
+                                cmdWelcome(nextId, aiThinkingTime, 0);
+                            } else{
+                                cmdWelcome(nextId, humanThinkingTime, 0);
+                            }
+                        } else {
+                            send(REPORTILLEGAL + " " + line);
+                        }
+                        break;
+                    case MOVE:
+                        //TODO: check if valid and place, else REPORTILLEGAL
+                        break;
+                    default:
+                        send(REPORTILLEGAL + " " + line);
                 }
             }
         } catch (IOException e){

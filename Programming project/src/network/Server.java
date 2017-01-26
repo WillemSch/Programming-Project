@@ -54,6 +54,10 @@ public class Server {
         }
     }
 
+    private static void startMatch(){
+
+    }
+
     /**
      * Sends a given string to all connected clients.
      * @param message A <code>String</code> with the message which is to be send.
