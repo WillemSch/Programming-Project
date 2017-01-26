@@ -15,6 +15,8 @@ public class Server {
 
     private static final String USAGE = "usage: <port>";
     private static List<ClientHandeler> clients;
+    private static List<ClientHandeler> waitingClients;
+    private static List<GameServer> games;
 
     /**
      * The main function which initiates the Server and starts the acceptor in a new thread.
@@ -54,8 +56,25 @@ public class Server {
         }
     }
 
-    private static void startMatch(){
+    public static void addToWaiting (ClientHandeler client){
+        waitingClients.add(client);
+    }
 
+    public static void removeFromWaiting (ClientHandeler client) {
+        if(clients.contains(client)){
+            clients.remove(client);
+        }
+    }
+
+    private static void startMatch(){
+        while(true){
+            if(waitingClients.size() > 1){
+                GameServer newGame = new GameServer(waitingClients.subList(0,1));
+                games.add(newGame);
+                waitingClients.remove(0);
+                waitingClients.remove(1);
+            }
+        }
     }
 
     /**

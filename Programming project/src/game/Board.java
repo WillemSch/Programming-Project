@@ -126,4 +126,27 @@ public class Board {
 		Integer[] coordinates = { x, y, z };
 		fields.put(coordinates, m);
 	}
+
+	public int getHeightOfField(int x, int y){
+		for(int i = 0; i <= heigth; i++){
+			if (getField(x,y,i) == null){
+				return i - 1;
+			}
+		}
+	}
+
+	public boolean setField(int x, int y, Mark m){
+		int z = getHeightOfField(x, y);
+		if(isValidMove(x, y, z)){
+			Integer[] coordinates = { x, y, z };
+			fields.put(coordinates, m);
+			return true;
+		} else{
+			return false;
+		}
+	}
+
+	public boolean isValidMove(int x, int y, int z){
+		return (x < width && y < length && z < heigth);
+	}
 }
