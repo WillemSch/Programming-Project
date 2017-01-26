@@ -18,6 +18,7 @@ public class Server {
     private static List<ClientHandeler> waitingClients;
     private static List<GameServer> games;
 
+    //TODO: fix javadoc
     /**
      * The main function which initiates the Server and starts the acceptor in a new thread.
      * @param args
