@@ -11,12 +11,23 @@ public class ClientPlayer extends Player{
     private boolean hasNewMove;
     private Integer[] move;
 
+    /**
+     * Constructor of <code>ClientPlayer</code>. Starts a new thread for DetermineMove() because it has to wait until
+     * a move is given to it.
+     * @param board The <code>Board</code> of the game being played.
+     * @param color the <code>Color</code> of this <code>Player</code> of the <code>Game</code>.
+     */
     public ClientPlayer(Board board, Color color){
-        //TODO: make constructor
-        super("name", Color.BLUE);
+        super("name", color);
+        hasNewMove = false;
         new Thread(() -> {determineMove(board);});
     }
 
+    /**
+     * Waits for a new Move from the Client and returns that, this method is called in Game.
+     * @param board The current <code>Board</code> of the active game.
+     * @return an <code>Integer[]</code> containing the x and y value of the move.
+     */
     public Integer[] determineMove(Board board) {
         while(!hasNewMove){
             try {
