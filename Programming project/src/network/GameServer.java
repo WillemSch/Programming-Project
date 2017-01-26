@@ -29,7 +29,7 @@ public class GameServer {
         Mark mark = players.get(player);
         if (board.setField(x, y, mark)){
             for (ClientHandeler c: players.keySet()){
-                c.cmdMoveSuccess(x, y, player.getClientId(), players.keySet().turnOfIndex.getClientId());
+                c.cmdMoveSuccess(x, y, player.getClientId(), player.getClientId());
                 if (board.isWinner(mark)){
                     c.cmdGameEnd(player.getClientId());
                 }
@@ -37,10 +37,8 @@ public class GameServer {
         }
     }
 
-
-
     private void broadcast (String message){
-        for(ClientHandeler c : players){
+        for(ClientHandeler c : players.keySet()){
             c.send(message);
         }
     }

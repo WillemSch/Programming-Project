@@ -190,6 +190,10 @@ public class ClientHandeler extends Thread implements Connect4Server{
         send(message);
     }
 
+    /**
+     * Returns the id of this client
+     * @return an <code>int</code> with the id of this client
+     */
     public int getClientId(){
         return id;
     }

@@ -475,6 +475,17 @@ public class Board {
 		return fields.containsKey(coordinates);
 	}
 
+	public boolean setField(int x, int y, Mark m){
+        int z = getHeightOfField(x, y) + 1;
+        if (isValidMove(x, y, z)){
+            Integer[] coordinates = {x, y, z};
+            setField(coordinates, m);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 	public int getHeightOfField(int x, int y) {
 		for (int i = 0; i <= heigth; i++) {
 			Integer[] coordinates = {x,y,i};
