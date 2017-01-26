@@ -72,7 +72,7 @@ public class Board {
 		int x = coordinates[0];
 		int y = coordinates[1];
 		int z = coordinates[2];
-		return (x > 0 && x < width) && (y > 0 && y < length) && (z > 0 && z < heigth);
+		return (x >= 0 && x < width) && (y >= 0 && y < length) && (z >= 0 && z < heigth);
 	}
 
 	public Mark getField(Integer[] coordinates) {
@@ -433,9 +433,7 @@ public class Board {
 			Mark m = player.getMark();
 			if (isWinner(m)) {
 				return isWinner(m);
-			} else {
-				return false;
-			}
+			} 
 		}
 		return false;
 	}
@@ -475,28 +473,24 @@ public class Board {
 		return fields.containsKey(coordinates);
 	}
 
-	public boolean setField(int x, int y, Mark m){
-        int z = getHeightOfField(x, y) + 1;
-        if (isValidMove(x, y, z)){
-            Integer[] coordinates = {x, y, z};
-            setField(coordinates, m);
-            return true;
-        } else {
-            return false;
-        }
-    }
+	public boolean setField(int x, int y, Mark m) {
+		int z = getHeightOfField(x, y) + 1;
+		Integer[] coordinates = { x, y, z };
+		if (isField(coordinates)) {
+			setField(coordinates, m);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public int getHeightOfField(int x, int y) {
-		for (int i = 0; i <= heigth; i++) {
-			Integer[] coordinates = {x,y,i};
+		for (int i = 0; i < heigth; i++) {
+			Integer[] coordinates = { x, y, i };
 			if (isEmptyField(coordinates)) {
-				return i - 1;
+				return i;
 			}
 		}
 		return -1;
-	}
-
-	public boolean isValidMove(int x, int y, int z){
-		return (x < width && y < length && z < heigth && z != -1);
 	}
 }

@@ -13,6 +13,7 @@ public class Game {
 	public Game(Board board) {
 		this.board = board;
 		this.players = board.getPlayers();
+		numberOfPlayers = players.length;
 		current = 0;
 	}
 
@@ -30,7 +31,7 @@ public class Game {
 		Player currPlayer = players[current];
 		while (!board.gameOver()) {
 			update();
-			board.setField(currPlayer.determineMove(board), currPlayer.getMark());
+			currPlayer.makeMove(board);
 			current = (current + 1) % numberOfPlayers;
 			currPlayer = players[current];
 		}

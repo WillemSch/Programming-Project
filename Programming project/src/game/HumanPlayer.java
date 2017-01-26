@@ -43,28 +43,6 @@ public class HumanPlayer extends Player {
 	private int y;
 	private int z;
 
-	/*
-	 * public Integer[] determineMove(Board board) { boolean validmove = false;
-	 * while (!validmove) { boolean validinput = false; while (!validinput) {
-	 * 
-	 * System.out.printf("> %s (%s), what is your move (in the form x,y)",
-	 * getName(), getMark().toString()); Scanner input = new Scanner(System.in);
-	 * if (input.hasNextLine() && input.nextLine().contains(",")) { String[] in
-	 * = input.nextLine().split(","); if (in[0].matches("\\d+") &&
-	 * in[1].matches("\\d+")) { x = Integer.parseInt(in[0]); y =
-	 * Integer.parseInt(in[1]); z = 0; if (board.isField(x, y, z)) { validinput
-	 * = true; } else { input.close();
-	 * System.out.println("Error: invalid input. Try again."); } } else {
-	 * input.close(); System.out.println("Error: invalid input. Try again."); }
-	 * } else { input.close();
-	 * System.out.println("Error: invalid input. Try again."); } input.close();
-	 * } while (!board.isEmptyField(x, y, z) && (z < board.getHeigth())) { z++;
-	 * } if (z == board.getHeigth()) {
-	 * System.out.printf("Error: field %d,%d is no valid choice. Try again.", x,
-	 * y); } else { validmove = true; } } Integer[] coordinates = { x, y, z };
-	 * return coordinates; }
-	 */
-
 	public Integer[] determineMove(Board board) {
 		String prompt = "> " + getName() + " (" + getMark().toString() + ")" + ", what is your choice? ";
 		Integer[] choice = readInt(prompt, board);
@@ -99,19 +77,16 @@ public class HumanPlayer extends Player {
 						if (in_1.matches("\\d+") && in_2.matches("\\d+")) {
 							x = Integer.parseInt(in_1);
 							y = Integer.parseInt(in_2);
-							z = 0;
+							z = board.getHeightOfField(x, y);
 						}
 					}
 				}
 			}
 			Integer[] coordinates = { x, y, z };
-			while (!board.isEmptyField(coordinates) && (z < board.getHeigth())) {
-				z++;
-			}
-			if (z == board.getHeigth()) {
-				System.out.printf("Error: field %d,%d is no valid choice. \nTry again.", x, y);
-			} else {
+			if (board.isField(coordinates)) {
 				intRead = true;
+			} else {
+				System.out.println("error" + z);
 			}
 		} while (!intRead);
 		Integer[] coordinates = { x, y, z };
