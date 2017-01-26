@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author
- * @Version
+ * @Author Willem Schooltink
+ * @Version 1.0.0
  * The controller of a game on the server.
  */
 public class GameServer {
