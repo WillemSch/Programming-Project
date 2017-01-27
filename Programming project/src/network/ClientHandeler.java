@@ -15,13 +15,16 @@ import java.net.Socket;
  */
 public class ClientHandeler extends Thread implements Connect4Server{
 
-    private static int nextId = 0;
+    //----------------LOCAL-VARIABLES---------------------------
     private int id;
     private String name;
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameServer game;
+
+    //---------------STATIC-Variables---------------------------
+    private static int nextId = 0;
     private static final long humanThinkingTime = 120000;
     private static final long aiThinkingTime = 2000;
 
@@ -85,7 +88,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
                         handleMove(line);
                         break;
                     default:
-                        send(REPORTILLEGAL + " " + line);
+                        cmdReportIllegal(line);
                 }
             }
         } catch (IOException e){
@@ -105,6 +108,8 @@ public class ClientHandeler extends Thread implements Connect4Server{
             if (game != null) {
                 game.makeMove(x, y, this);
             }
+        } else {
+            cmdReportIllegal(line);
         }
     }
 
@@ -126,7 +131,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
             }
             Server.addToWaiting(this);
         } else {
-            send(REPORTILLEGAL + " " + line);
+            cmdReportIllegal(line);
         }
     }
 
