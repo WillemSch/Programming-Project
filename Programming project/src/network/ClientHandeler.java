@@ -79,29 +79,10 @@ public class ClientHandeler extends Thread implements Connect4Server{
                 String[] words = line.split(" ");
                 switch (words[0]){
                     case HELLO:
-                        if(words.length == 4 && words[2].matches("\\d+") && (words[3].equals("true")
-                                || words[3].equals("false"))){
-                            name = words[1];
-                            boolean ai = words[3].equals("true");
-                            System.out.println(ai);
-                            if(ai){
-                                cmdWelcome(nextId, aiThinkingTime, 0);
-                            } else{
-                                cmdWelcome(nextId, humanThinkingTime, 0);
-                            }
-                            Server.addToWaiting(this);
-                        } else {
-                            send(REPORTILLEGAL + " " + line);
-                        }
+                        handleHello(line);
                         break;
                     case MOVE:
-                        if(words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
-                            int x = Integer.parseInt(words[1]);
-                            int y = Integer.parseInt(words[2]);
-                            if (game != null) {
-                                game.makeMove(x, y, this);
-                            }
-                        }
+                        handleMove(line);
                         break;
                     default:
                         send(REPORTILLEGAL + " " + line);
@@ -109,6 +90,43 @@ public class ClientHandeler extends Thread implements Connect4Server{
             }
         } catch (IOException e){
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Is called when the first word of the input is "MOVE", checks if the command is legal and takes action accordingly.
+     * @param line A <code>String</code> with the command
+     */
+    private void handleMove(String line){
+        String[] words = line.split(" ");
+        if(words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
+            int x = Integer.parseInt(words[1]);
+            int y = Integer.parseInt(words[2]);
+            if (game != null) {
+                game.makeMove(x, y, this);
+            }
+        }
+    }
+
+    /**
+     * Is called when the first word of the input is "HELLO", checks if the command is legal and sends back a WELCOME.
+     * @param line A <code>String</code> with the command
+     */
+    private void handleHello(String line){
+        String[] words = line.split(" ");
+        if(words.length == 4 && words[2].matches("\\d+") && (words[3].equals("true")
+                || words[3].equals("false"))){
+            name = words[1];
+            boolean ai = words[3].equals("true");
+            System.out.println(ai);
+            if(ai){
+                cmdWelcome(nextId, aiThinkingTime, 0);
+            } else{
+                cmdWelcome(nextId, humanThinkingTime, 0);
+            }
+            Server.addToWaiting(this);
+        } else {
+            send(REPORTILLEGAL + " " + line);
         }
     }
 

@@ -13,15 +13,15 @@ public class HumanPlayer extends Player {
 	// -- Constructors -----------------------------------------------
 
 	/*
-	 * @ requires name != null; requires mark == Mark.XX || mark == Mark.OO;
-	 * ensures this.getName() == name; ensures this.getMark() == mark;
+	 * @ requires name != null; requires mark == Color.RED || mark == Color.BLUE;
+	 * ensures this.getName() == name; ensures this.getColor() == mark;
 	 */
 	/**
 	 * Creates a new human player object.
 	 * 
 	 */
-	public HumanPlayer(String name, Mark mark) {
-		super(name, mark);
+	public HumanPlayer(String name, Color color) {
+		super(name, color);
 	}
 
 	// -- Commands ---------------------------------------------------
@@ -44,7 +44,7 @@ public class HumanPlayer extends Player {
 	private int z;
 
 	public Integer[] determineMove(Board board) {
-		String prompt = "> " + getName() + " (" + getMark().toString() + ")" + ", what is your choice? ";
+		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice? ";
 		Integer[] choice = readInt(prompt, board);
 		boolean valid = board.isField(choice) && board.isEmptyField(choice);
 		while (!valid) {

@@ -1,23 +1,25 @@
 package network;
 
 import game.Board;
-import game.Mark;
+import game.Color;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @Author
- * @Version
+ * @Author Willem Schooltink
+ * @Version 1.0.0
  * The controller of a game on the server.
  */
 public class GameServer {
-    private Map<ClientHandeler, Mark> players;
+    private Map<ClientHandeler, Color> players;
     private Board board;
     private int turnOfIndex;
-    //TODO: Fix this shit with the marks
-    private static final Mark[] MARKS = {Mark.OO, Mark.XX};
+    private static final Color[] COLORS = {Color.BLUE, Color.RED};
 
+    //TODO: Fix this or Remove this!!!!
     /**
      * The constructor of the <code>GameServer</code> with a dynamic winlenght and board size. Assigns marks to
      * the players and makes a board of the given size.
@@ -26,13 +28,14 @@ public class GameServer {
      * @param winlength an <code>int</code> which represents the lenght of a row needed to win the game.
      */
     public GameServer(List<ClientHandeler> players, int[] boardSize, int winlength){
+        this.players = new LinkedHashMap<ClientHandeler, Color>();
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
-            //TODO: MARKS --> COLORS
-            this.players.put(c, MARKS[i]);
-            //TODO: Fix last parameter
-            this.board = new Board(boardSize[0], boardSize[1], boardSize[2], winlength, board.getPlayers());
+            this.players.put(c, COLORS[i]);
         }
+        this.turnOfIndex = 0;
+        //TODO: Fix last parameter
+        this.board = new Board(boardSize[0], boardSize[1], boardSize[2], winlength, board.getPlayers());
     }
 
     /**
@@ -40,13 +43,13 @@ public class GameServer {
      * @param players a <code>List</code> of <code>ClientHandeler</code>s of the players in the game
      */
     public GameServer(List<ClientHandeler> players){
+        this.players = new LinkedHashMap<ClientHandeler, Color>();
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
-            //TODO: MARKS --> COLORS
-            this.players.put(c, MARKS[i]);
-            //TODO: Fix last parameter
-            this.board = new Board(4,4,4, board.getPlayers());
+            this.players.put(c, COLORS[i]);
         }
+        turnOfIndex = 0;
+        this.board = new Board(4,4,4);
     }
 
     /**
@@ -56,15 +59,21 @@ public class GameServer {
      * @param player a <code>ClientHandeler</code> of the player making a move.
      */
     public void makeMove(int x, int y, ClientHandeler player){
-        Mark mark = players.get(player);
-        if (board.setField(x, y, mark)){
+        Color color = players.get(player);
+        int nextPlayerId = new ArrayList<>(players.keySet()).get(turnOfIndex).getClientId();
+        boolean hasWinner = false;
+        if (board.setField(x, y, color)){
             for (ClientHandeler c: players.keySet()){
-                //TODO: fix nextID
-                c.cmdMoveSuccess(x, y, player.getClientId(), player.getClientId());
-                if (board.isWinner(mark)){
+                c.cmdMoveSuccess(x, y, player.getClientId(), nextPlayerId);
+                if (board.isWinner(color)){
                     c.cmdGameEnd(player.getClientId());
+                    hasWinner = true;
                 }
             }
+        }
+
+        if(hasWinner){
+            Server.removeGame(this);
         }
     }
 
@@ -76,5 +85,12 @@ public class GameServer {
         for(ClientHandeler c : players.keySet()){
             c.send(message);
         }
+    }
+
+    /**
+     * Changes the turnOfIndex into the next index, if it is at the last index it starts again at 0.
+     */
+    private void nextIndex() {
+        turnOfIndex = (turnOfIndex + 1) % players.size();
     }
 }

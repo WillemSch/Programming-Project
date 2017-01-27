@@ -80,17 +80,17 @@ public class Client extends Thread implements Connect4Client {
                 switch (args[0]){
                     case "-S":
                         //TODO: Fix marks
-                        player = new ComputerPlayer(Mark.OO, new SmartStrategy());
+                        player = new ComputerPlayer(Color.BLUE, new SmartStrategy());
                         client = new Client(server, "Smart computer", 1, true, player);
                         break;
                     case "-N":
                         //TODO: Fix marks
-                        player = new ComputerPlayer(Mark.OO, new NaiveStrategy());
+                        player = new ComputerPlayer(Color.BLUE, new NaiveStrategy());
                         client = new Client(server, "Naive computer", 1, true, player);
                         break;
                     default:
                         //TODO: Fix marks
-                        player = new HumanPlayer(args[1], Mark.OO);
+                        player = new HumanPlayer(args[1], Color.BLUE);
                         client = new Client(server, args[0], 1, false, player);
                         break;
                 }

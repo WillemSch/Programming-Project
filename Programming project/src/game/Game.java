@@ -44,8 +44,8 @@ public class Game {
 
 	private void printResult() {
 		if (board.hasWinner()) {
-			Player winner = board.isWinner(players[0].getMark()) ? players[0] : players[1];
-			System.out.println("Speler " + winner.getName() + " (" + winner.getMark().toString() + ") has won!");
+			Player winner = board.isWinner(players[0].getColor()) ? players[0] : players[1];
+			System.out.println("Speler " + winner.getName() + " (" + winner.getColor().toString() + ") has won!");
 		} else {
 			System.out.println("Draw. There is no winner!");
 		}
@@ -56,6 +56,6 @@ public class Game {
      * @param player a <code>Player</code> that will be crowned winner.
      */
 	public void forceWinner(Player player){
-        System.out.println("Speler " + player.getName() + " (" + player.getMark().toString() + ") has won!");
+        System.out.println("Speler " + player.getName() + " (" + player.getColor().toString() + ") has won!");
     }
 }
