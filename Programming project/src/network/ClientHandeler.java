@@ -22,6 +22,11 @@ public class ClientHandeler extends Thread implements Connect4Server{
     private PrintWriter writer;
     private BufferedReader reader;
     private GameServer game;
+    private Server server;
+    private boolean turnOfThisClient;
+    private boolean hasMove;
+    private long thinkingTime;
+    private int[] move;
 
     //---------------STATIC-Variables---------------------------
     private static int nextId = 0;
@@ -43,8 +48,11 @@ public class ClientHandeler extends Thread implements Connect4Server{
      * The constructor of the ClientHandeler
      * @param socket A <code>Socket</code> to communicate with the client.
      */
-    public ClientHandeler (Socket socket){
+    public ClientHandeler (Socket socket, Server server){
+        hasMove = false;
+        turnOfThisClient = false;
         nextId++;
+        this.server = server;
         this.id = nextId;
         this.socket = socket;
 
@@ -69,7 +77,9 @@ public class ClientHandeler extends Thread implements Connect4Server{
      * The run void of this <code>Thread</code>, it starts handleInput();
      */
     public void run(){
-        handleInput();
+        synchronized (this) {
+            handleInput();
+        }
     }
 
     /**
@@ -102,12 +112,12 @@ public class ClientHandeler extends Thread implements Connect4Server{
      */
     private void handleMove(String line){
         String[] words = line.split(" ");
-        if(words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
+        if(turnOfThisClient && words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
             int x = Integer.parseInt(words[1]);
             int y = Integer.parseInt(words[2]);
-            if (game != null) {
-                game.makeMove(x, y, this);
-            }
+            move = new int[] {x,y};
+            hasMove = true;
+            notify();
         } else {
             cmdReportIllegal(line);
         }
@@ -126,10 +136,13 @@ public class ClientHandeler extends Thread implements Connect4Server{
             System.out.println(ai);
             if(ai){
                 cmdWelcome(nextId, aiThinkingTime, 0);
+                thinkingTime = aiThinkingTime;
             } else{
                 cmdWelcome(nextId, humanThinkingTime, 0);
+                thinkingTime = humanThinkingTime;
             }
-            Server.addToWaiting(this);
+            System.out.println(server);
+            server.addToWaiting(this);
         } else {
             cmdReportIllegal(line);
         }
@@ -164,7 +177,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
      */
     @Override
     public void cmdGameEnd(int winnerID) {
-        String message = String.format("%1$s %2$d", REPORTILLEGAL, winnerID);
+        String message = String.format("%1$s %2$d", GAMEEND, winnerID);
         send(message);
     }
 
@@ -181,7 +194,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
     @Override
     public void cmdGame(String nameOtherPlayer, int otherPlayerID, int playFieldX, int playFieldY,
                         int playFieldZ, int playerWhoHasNextTurnID, int sequenceLengthOfWin) {
-        String message = String.format("%1$s %2$s %3$d %4$d %5$d %6$d %7$d %8$d", REPORTILLEGAL, nameOtherPlayer,
+        String message = String.format("%1$s %2$s %3$d %4$d %5$d %6$d %7$d %8$d", GAME, nameOtherPlayer,
                 otherPlayerID, playFieldX, playFieldY, playFieldZ, playerWhoHasNextTurnID, sequenceLengthOfWin);
         send(message);
     }
@@ -219,5 +232,22 @@ public class ClientHandeler extends Thread implements Connect4Server{
      */
     public int getClientId(){
         return id;
+    }
+
+    public int[] makeMove(){
+        try {
+            if (!hasMove) {
+                wait(thinkingTime);
+            }
+            hasMove = false;
+            return move;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void isTurnOfThisClient(boolean turn){
+        turnOfThisClient = turn;
     }
 }

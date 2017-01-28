@@ -33,7 +33,8 @@ public class Client extends Thread implements Connect4Client {
     private PrintWriter writer;
     private BufferedReader reader;
     private Player player;
-    private Board board;
+    private ClientPlayer opponent;
+    private Game game;
 
     /**
      * The constructor of the client.
@@ -48,6 +49,10 @@ public class Client extends Thread implements Connect4Client {
         this.name = name;
         this.id = id;
         this.ai = ai;
+        this.player = player;
+        this.fieldsize = new int[3];
+
+        this.player.setClient(this);
 
         try {
             writer = new PrintWriter(socket.getOutputStream());
@@ -66,7 +71,7 @@ public class Client extends Thread implements Connect4Client {
      * @param args A <code>String[]</code> which is used to determine the type of player and server. Arguments: <name> <address> <port>
      */
     public static void main(String[] args) {
-        args = new String[]{"name", "130.89.180.79", "1234"};
+        args = new String[]{"name", "localhost", "4040"};
 
         if (args.length != 3) {
             System.out.println(USAGE);
@@ -79,17 +84,14 @@ public class Client extends Thread implements Connect4Client {
                 Player player;
                 switch (args[0]){
                     case "-S":
-                        //TODO: Fix marks
                         player = new ComputerPlayer(Color.BLUE, new SmartStrategy());
                         client = new Client(server, "Smart computer", 1, true, player);
                         break;
                     case "-N":
-                        //TODO: Fix marks
                         player = new ComputerPlayer(Color.BLUE, new NaiveStrategy());
                         client = new Client(server, "Naive computer", 1, true, player);
                         break;
                     default:
-                        //TODO: Fix marks
                         player = new HumanPlayer(args[1], Color.BLUE);
                         client = new Client(server, args[0], 1, false, player);
                         break;
@@ -108,54 +110,30 @@ public class Client extends Thread implements Connect4Client {
      */
     public void run() {
         try {
-            String line;
             cmdHello("me", 0, false);
+
+            String line;
             while ((line = reader.readLine()) != null) {
                 String[] words = line.split(" ");
                 if (words.length >= 2) {
                     switch (words[0]) {
                         case "WELCOME":
-                            if (words.length == 4 && words[1].matches("\\d+") && words[2].matches("\\d+")
-                                    && words[3].matches("\\d+")) {
-                                id = Integer.parseInt(words[1]);
-                                thinkingTime = Long.parseLong(words[2]);
-                                serverCapabilities = Integer.parseInt(words[3]);
-                                System.out.println(id);
-                            } else {
-                                System.out.println("Something went terribly wrong...");
-                            }
+                            welcomeHandler(line);
                             break;
                         case "GAME":
-                            if ((words.length == 8) && words[2].matches("\\d+") && words[3].matches("\\d+")
-                                    && words[4].matches("\\d+") && words[5].matches("\\d+")
-                                    && words[6].matches("\\d+") && words[7].matches("\\d+")){
-                                opponentId = Integer.parseInt(words[2]);
-                                fieldsize[0] = Integer.parseInt(words[3]);
-                                fieldsize[1] = Integer.parseInt(words[4]);
-                                fieldsize[2] = Integer.parseInt(words[5]);
-                                turnOfId = Integer.parseInt(words[6]);
-                                winLenght = Integer.parseInt(words[7]);
-                            } else {
-                                System.out.println("Something went terribly wrong...");
-                            }
+                            gameHandler(line);
                             break;
                         case "GAMEEND":
-                            if (words.length == 2 && words[1].equals(String.valueOf(id))){
-                                System.out.println("You won!");
-                            } else if (words.length == 2 && words[1].equals(String.valueOf(opponentId))){
-                                System.out.println("You lost...");
-                            } else {
-                                System.out.println("Something went terribly wrong...");
-                            }
+                            gameEndHandler(line);
                             break;
                         case "MOVESUCCESS":
-                            //TODO: check id, if from other player change Board and start determineMove()
+                            moveSuccessHandler(line);
                             break;
                         case "PLAYERLEFT":
-                            //TODO: if player is yourself or opponent quit game state
+                            playerLeftHandler(line);
                             break;
                         case "REPORTILLEGAL":
-                            //TODO: if its the last move command of this player restart determinemove, and notify player
+                            reportIllegalHandler(line);
                             System.out.println(line);
                             break;
                         default:
@@ -169,6 +147,106 @@ public class Client extends Thread implements Connect4Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Translates and handles the "WELCOME" command.
+     * @param line a <code>String</code> with the entire command including its arguments
+     */
+    private void welcomeHandler(String line){
+        String[] words = line.split(" ");
+        if (words.length == 4 && words[1].matches("\\d+") && words[2].matches("\\d+")
+                && words[3].matches("\\d+")) {
+            id = Integer.parseInt(words[1]);
+            thinkingTime = Long.parseLong(words[2]);
+            serverCapabilities = Integer.parseInt(words[3]);
+            System.out.println(id);
+        } else {
+            System.out.println("Something went terribly wrong...");
+        }
+    }
+
+    /**
+     * Translates and handles the "GAME" command.
+     * @param line a <code>String</code> with the entire command including its arguments
+     */
+    private void gameHandler(String line){
+        String[] words = line.split(" ");
+        if ((words.length == 8) && words[2].matches("\\d+") && words[3].matches("\\d+")
+                && words[4].matches("\\d+") && words[5].matches("\\d+")
+                && words[6].matches("\\d+") && words[7].matches("\\d+")){
+            opponentId = Integer.parseInt(words[2]);
+            System.out.println(Integer.parseInt(words[3]));
+            fieldsize[0] = Integer.parseInt(words[3]);
+            fieldsize[1] = Integer.parseInt(words[4]);
+            fieldsize[2] = Integer.parseInt(words[5]);
+            turnOfId = Integer.parseInt(words[6]);
+            winLenght = Integer.parseInt(words[7]);
+            Board board = new Board(fieldsize[0], fieldsize[1], fieldsize[2]);
+            opponent = new ClientPlayer(board, Color.RED);
+            opponent.setClient(this);
+            Player[] players = new Player[] {player, opponent};
+            game = new Game(board, players, (turnOfId == id));
+            game.start();
+            System.out.println("Hello");
+        } else {
+            System.out.println("Something went terribly wrong...");
+        }
+    }
+
+    /**
+     * Translates and handles the "GAME_END" command.
+     * @param line a <code>String</code> with the entire command including its arguments
+     */
+    private void gameEndHandler(String line){
+        String[] words = line.split(" ");
+        if (words.length == 2 && words[1].equals(String.valueOf(id))){
+            game.forceWinner(player);
+        } else if (words.length == 2 && words[1].equals(String.valueOf(opponentId))){
+            game.forceWinner(opponent);
+            //"-1" is send if the game ends in a draw
+        } else if (words.length == 2 && words[1].equals("-1")){
+            game.forceDraw();
+        } else {
+            System.out.println("Something went terribly wrong...");
+        }
+    }
+
+    /**
+     * Translates and handles the "MOVE_SUCCESS" command.
+     * @param line a <code>String</code> with the entire command including its arguments
+     */
+    private void moveSuccessHandler(String line){
+        String[] words = line.split(" ");
+        if ((words.length == 5) && words[1].matches("\\d+") && words[2].matches("\\d+")
+                && words[3].matches("\\d+") && words[4].matches("\\d+")){
+            int xCoordinate = Integer.parseInt(words[1]);
+            int yCoordinate = Integer.parseInt(words[2]);
+            int nextPlayerId = Integer.parseInt(words[4]);
+            if (nextPlayerId != id){
+                opponent.giveMove(xCoordinate, yCoordinate);
+            }
+        } else {
+            System.out.println("Something went terribly wrong");
+        }
+    }
+
+    /**
+     * Translates and handles the "MOVE_SUCCESS" command.
+     * @param line a <code>String</code> with the entire command including its arguments
+     */
+    private void playerLeftHandler(String line){
+        String[] words = line.split(" ");
+        if (words.length == 3 && words[1].matches("\\d+")){
+            System.out.println("Player " + words[1] + " left, Reason: " + words[2]);
+        } else {
+            System.out.println("Something went terribly wrong...");
+        }
+    }
+
+    private void reportIllegalHandler(String line){
+        System.out.println("A command has been flagged Illegal by the server:");
+        System.out.println(line);
     }
 
     /**
