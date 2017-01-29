@@ -101,6 +101,10 @@ public class ClientHandeler extends Thread implements Connect4Server{
                         cmdReportIllegal(line);
                 }
             }
+
+            if (game != null){
+                game
+            }
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -112,13 +116,16 @@ public class ClientHandeler extends Thread implements Connect4Server{
      */
     private void handleMove(String line){
         String[] words = line.split(" ");
-        if(turnOfThisClient && words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
+        if(/*turnOfThisClient &&*/ words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
             int x = Integer.parseInt(words[1]);
             int y = Integer.parseInt(words[2]);
             move = new int[] {x,y};
-            hasMove = true;
+            if(!sendMove(move)){
+                cmdReportIllegal(line);
+            }
             notify();
         } else {
+            System.out.println("is turn of this one:" + turnOfThisClient);
             cmdReportIllegal(line);
         }
     }
@@ -234,20 +241,11 @@ public class ClientHandeler extends Thread implements Connect4Server{
         return id;
     }
 
-    public int[] makeMove(){
-        try {
-            if (!hasMove) {
-                wait(thinkingTime);
-            }
-            hasMove = false;
-            return move;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void setGameServer(GameServer gameServer){
+        game = gameServer;
     }
 
-    public void isTurnOfThisClient(boolean turn){
-        turnOfThisClient = turn;
+    private boolean sendMove(int[] move){
+        return game.move(id, move[0], move[1], this);
     }
 }

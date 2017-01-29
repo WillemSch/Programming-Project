@@ -21,37 +21,17 @@ public class GameServer extends Thread{
     private int turnOfIndex;
     private static final Color[] COLORS = {Color.BLUE, Color.RED};
 
-    //TODO: Fix this or Remove this!!!!
-    /**
-     * The constructor of the <code>GameServer</code> with a dynamic winlenght and board size. Assigns marks to
-     * the players and makes a board of the given size.
-     * @param players a <code>List</code> of <code>ClientHandeler</code>s of the players in the game
-     * @param boardSize an <code>int[]</code> containing the width, length and height of the board respectively
-     * @param winlength an <code>int</code> which represents the lenght of a row needed to win the game.
-     */
-    public GameServer(List<ClientHandeler> players, int[] boardSize, int winlength, Server server){
-        playerLeft = false;
-        this.server = server;
-        this.players = new LinkedHashMap<ClientHandeler, Color>();
-        for (int i =0; i < players.size(); i++) {
-            ClientHandeler c = players.get(i);
-            this.players.put(c, COLORS[i]);
-        }
-        this.turnOfIndex = 0;
-        //TODO: Fix last parameter
-        this.board = new Board(boardSize[0], boardSize[1], boardSize[2], winlength, board.getPlayers());
-    }
-
     /**
      * The constructor of the <code>GameServer</code>. Assigns marks to the players and makes a board.
      * @param players a <code>List</code> of <code>ClientHandeler</code>s of the players in the game
      */
     public GameServer(List<ClientHandeler> players, Server server){
         this.server = server;
-        this.players = new LinkedHashMap<ClientHandeler, Color>();
+        this.players = new LinkedHashMap<>();
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
             this.players.put(c, COLORS[i]);
+            c.setGameServer(this);
         }
         turnOfIndex = 0;
         this.board = new Board(4,4,4);
@@ -75,43 +55,7 @@ public class GameServer extends Thread{
             listOfPlayers.get(i).cmdGame(listOfPlayers.get(otherIndex).getName(),
                     listOfPlayers.get(otherIndex).getClientId(), board.getWidth(), board.getLength(), board.getHeigth(),
                     listOfPlayers.get(0).getClientId(), board.getWinLength());
-            System.out.println(board.toString());
         }
-
-        //TODO: Check if move is valid.
-        ClientHandeler player = new ArrayList<>(players.keySet()).get(turnOfIndex);
-        while (!board.gameOver() && !playerLeft) {
-            synchronized (player) {
-                Color color = players.get(player);
-                player.isTurnOfThisClient(true);
-                int[] coordinates = player.makeMove();
-                if (/*isValid*/ true) {
-                    player.isTurnOfThisClient(false);
-                    board.setField(coordinates[0], coordinates[1], color);
-                    nextIndex();
-                    player = new ArrayList<>(players.keySet()).get(turnOfIndex);
-                } else {
-                    //report illegal
-                }
-            }
-        }
-
-        //-1 means draw
-        int winnerID = -1;
-
-        //Checks for a winner and if one is found winnerID get his/her/its id as value;
-        for (ClientHandeler c: players.keySet()){
-            Color color = players.get(c);
-            if (board.isWinner(color)){
-                winnerID = c.getClientId();
-            }
-        }
-
-        for (ClientHandeler c: players.keySet()){
-            c.cmdGameEnd(winnerID);
-        }
-
-        server.removeGame(this);
     }
 
     /**
@@ -129,5 +73,49 @@ public class GameServer extends Thread{
      */
     private void nextIndex() {
         turnOfIndex = (turnOfIndex + 1) % players.size();
+    }
+
+    public boolean move(int idOfPlayer, int x, int y, ClientHandeler client){
+        List<ClientHandeler> listOfPlayers = new ArrayList<>(players.keySet());
+        Color color = players.get(client);
+        if(idOfPlayer == listOfPlayers.get(turnOfIndex).getClientId()){
+            board.setField(x, y, color);
+            nextIndex();
+            System.out.println(x + "-" + y);
+            checkWinner();
+            for (ClientHandeler c : players.keySet()){
+                c.cmdMoveSuccess(x, y, idOfPlayer, turnOfIndex);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean checkWinner(){
+        if(board.hasWinner()){
+            ClientHandeler winner = null;
+            for(ClientHandeler c : players.keySet()){
+                if (board.isWinner(players.get(c))){
+                    winner = c;
+                }
+            }
+
+            for(ClientHandeler c : players.keySet()) {
+                //winner will always be initialized here so NPE will not happen
+                c.cmdGameEnd(winner.getClientId());
+            }
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public void leave(ClientHandeler client, String reason){
+        for (ClientHandeler c : players.keySet()){
+            if (!c.equals(client)){
+                c.cmdPlayerLeft(client.getClientId(), reason);
+            }
+        }
     }
 }

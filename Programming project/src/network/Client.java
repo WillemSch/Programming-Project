@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-//TODO: DESIGN PROJECT
-
 /**
  * @Author Willem Schooltink
  * @Version 1.0.0
@@ -33,8 +31,8 @@ public class Client extends Thread implements Connect4Client {
     private PrintWriter writer;
     private BufferedReader reader;
     private Player player;
-    private ClientPlayer opponent;
-    private Game game;
+    private Color opponentColor;
+    private Board board;
 
     /**
      * The constructor of the client.
@@ -182,13 +180,13 @@ public class Client extends Thread implements Connect4Client {
             fieldsize[2] = Integer.parseInt(words[5]);
             turnOfId = Integer.parseInt(words[6]);
             winLenght = Integer.parseInt(words[7]);
-            Board board = new Board(fieldsize[0], fieldsize[1], fieldsize[2]);
-            opponent = new ClientPlayer(board, Color.RED);
-            opponent.setClient(this);
-            Player[] players = new Player[] {player, opponent};
-            game = new Game(board, players, (turnOfId == id));
-            game.start();
-            System.out.println("Hello");
+            board = new Board(fieldsize[0], fieldsize[1], fieldsize[2]);
+            System.out.println("Game started:");
+            System.out.println(board.toString());
+            if(turnOfId == id) {
+                player.makeMove(board);
+            }
+            System.out.println("Wait for other player...");
         } else {
             System.out.println("Something went terribly wrong...");
         }
@@ -201,15 +199,16 @@ public class Client extends Thread implements Connect4Client {
     private void gameEndHandler(String line){
         String[] words = line.split(" ");
         if (words.length == 2 && words[1].equals(String.valueOf(id))){
-            game.forceWinner(player);
+            System.out.println("You won");
         } else if (words.length == 2 && words[1].equals(String.valueOf(opponentId))){
-            game.forceWinner(opponent);
+            System.out.println("Your opponent won");
             //"-1" is send if the game ends in a draw
         } else if (words.length == 2 && words[1].equals("-1")){
-            game.forceDraw();
+            System.out.println("Draw");
         } else {
             System.out.println("Something went terribly wrong...");
         }
+        board.reset();
     }
 
     /**
@@ -224,7 +223,11 @@ public class Client extends Thread implements Connect4Client {
             int yCoordinate = Integer.parseInt(words[2]);
             int nextPlayerId = Integer.parseInt(words[4]);
             if (nextPlayerId != id){
-                opponent.giveMove(xCoordinate, yCoordinate);
+                board.setField(xCoordinate, yCoordinate, opponentColor);
+                System.out.println("Opponent made move: " + xCoordinate + " - " + yCoordinate);
+                System.out.println(board.toString());
+                player.makeMove(board);
+                System.out.println("Wait for other player...");
             }
         } else {
             System.out.println("Something went terribly wrong");
@@ -239,6 +242,7 @@ public class Client extends Thread implements Connect4Client {
         String[] words = line.split(" ");
         if (words.length == 3 && words[1].matches("\\d+")){
             System.out.println("Player " + words[1] + " left, Reason: " + words[2]);
+            board.reset();
         } else {
             System.out.println("Something went terribly wrong...");
         }

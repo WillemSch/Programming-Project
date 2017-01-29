@@ -90,7 +90,7 @@ public class Server {
      */
     private void startMatch(){
         if(waitingClients.size() > 1) {
-            GameServer newGame = new GameServer(waitingClients.subList(0, 1), this);
+            GameServer newGame = new GameServer(waitingClients.subList(0,2), this);
             games.add(newGame);
             waitingClients.remove(1);
             waitingClients.remove(0);
