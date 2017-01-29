@@ -27,6 +27,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
     private boolean hasMove;
     private long thinkingTime;
     private int[] move;
+    private Thread timer;
 
     //---------------STATIC-Variables---------------------------
     private static int nextId = 0;
@@ -103,7 +104,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
             }
 
             if (game != null){
-                game
+                leave("Client " + id + " disconnected.");
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -116,16 +117,15 @@ public class ClientHandeler extends Thread implements Connect4Server{
      */
     private void handleMove(String line){
         String[] words = line.split(" ");
-        if(/*turnOfThisClient &&*/ words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
+        if(turnOfThisClient && words.length == 3 && words[1].matches("\\d+") && words[2].matches("\\d+")) {
             int x = Integer.parseInt(words[1]);
             int y = Integer.parseInt(words[2]);
             move = new int[] {x,y};
-            if(!sendMove(move)){
+            if(timer.isAlive() && !sendMove(move)){
+                timer.interrupt();
                 cmdReportIllegal(line);
             }
-            notify();
         } else {
-            System.out.println("is turn of this one:" + turnOfThisClient);
             cmdReportIllegal(line);
         }
     }
@@ -166,6 +166,13 @@ public class ClientHandeler extends Thread implements Connect4Server{
     public void cmdMoveSuccess(int moveX, int moveY, int actorID, int playerWhoHasNextTurnID) {
         String message = String.format("%1$s %2$d %3$d %4$d %5$d", MOVESUCCESS, moveX, moveY, actorID, playerWhoHasNextTurnID);
         send(message);
+        if (playerWhoHasNextTurnID == id){
+            turnOfThisClient = true;
+            timer = new Timer(thinkingTime, this);
+            timer.start();
+        } else {
+            turnOfThisClient = false;
+        }
     }
 
     /**
@@ -204,6 +211,11 @@ public class ClientHandeler extends Thread implements Connect4Server{
         String message = String.format("%1$s %2$s %3$d %4$d %5$d %6$d %7$d %8$d", GAME, nameOtherPlayer,
                 otherPlayerID, playFieldX, playFieldY, playFieldZ, playerWhoHasNextTurnID, sequenceLengthOfWin);
         send(message);
+        if(playerWhoHasNextTurnID == id) {
+            timer = new Timer(thinkingTime, this);
+            timer.start();
+            System.out.println("started" + timer.isAlive());
+        }
     }
 
     /**
@@ -241,11 +253,36 @@ public class ClientHandeler extends Thread implements Connect4Server{
         return id;
     }
 
+    /**
+     * Sets the <code>GameServer</code> field game to the given <code>GameServer</code>.
+     * @param gameServer The <code>GameServer</code> in which the client is currently active
+     */
     public void setGameServer(GameServer gameServer){
         game = gameServer;
     }
 
+    /**
+     * Sets the local <code>GameServer</code> field back to null.
+     */
+    public void removeFromGame(){
+        game = null;
+    }
+
+    /**
+     * Sends the given move to the <code>GameServer</code> if the move was successfull it returns true, if it failed
+     * it returns false.
+     * @param move An <code>int[]</code> which contains the x and y coordinate of the move.
+     * @return A <code>boolean</code> which is true if all went well, and false if something went wrong.
+     */
     private boolean sendMove(int[] move){
         return game.move(id, move[0], move[1], this);
+    }
+
+    /**
+     * Tells the <code>GameServer</code> that the client has left, and gives a reason.
+     * @param reason a <code>String</code> with the reason why the client left.
+     */
+    public void leave (String reason){
+        game.leave(this, reason);
     }
 }

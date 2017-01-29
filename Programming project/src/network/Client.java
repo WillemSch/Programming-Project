@@ -16,16 +16,14 @@ import java.net.Socket;
  */
 public class Client extends Thread implements Connect4Client {
 
+    //All possible capabilities have a value of 2 to the power n. Example: local scoreboard = 1, dynamic field size = 2,...
     private static final int CAPABILITIES = 0;
     private static final String USAGE = "Arguments: <name> <address> <port>";
     private String name;
     private boolean ai;
     private int id;
     private int opponentId;
-    private int serverCapabilities;
     private int turnOfId;
-    private int winLenght;
-    private int[] fieldsize; //[0] = x-axis, [1] = y-axis, [2] = z-axis
     private long thinkingTime;
     private Socket socket;
     private PrintWriter writer;
@@ -48,8 +46,7 @@ public class Client extends Thread implements Connect4Client {
         this.id = id;
         this.ai = ai;
         this.player = player;
-        this.fieldsize = new int[3];
-
+        this.opponentColor = Color.RED;
         this.player.setClient(this);
 
         try {
@@ -132,7 +129,6 @@ public class Client extends Thread implements Connect4Client {
                             break;
                         case "REPORTILLEGAL":
                             reportIllegalHandler(line);
-                            System.out.println(line);
                             break;
                         default:
                             System.out.println(line);
@@ -157,8 +153,7 @@ public class Client extends Thread implements Connect4Client {
                 && words[3].matches("\\d+")) {
             id = Integer.parseInt(words[1]);
             thinkingTime = Long.parseLong(words[2]);
-            serverCapabilities = Integer.parseInt(words[3]);
-            System.out.println(id);
+            int serverCapabilities = Integer.parseInt(words[3]);
         } else {
             System.out.println("Something went terribly wrong...");
         }
@@ -174,12 +169,12 @@ public class Client extends Thread implements Connect4Client {
                 && words[4].matches("\\d+") && words[5].matches("\\d+")
                 && words[6].matches("\\d+") && words[7].matches("\\d+")){
             opponentId = Integer.parseInt(words[2]);
-            System.out.println(Integer.parseInt(words[3]));
+            int[] fieldsize = new int[3];
             fieldsize[0] = Integer.parseInt(words[3]);
             fieldsize[1] = Integer.parseInt(words[4]);
             fieldsize[2] = Integer.parseInt(words[5]);
-            turnOfId = Integer.parseInt(words[6]);
-            winLenght = Integer.parseInt(words[7]);
+            int turnOfId = Integer.parseInt(words[6]);
+            int winLenght = Integer.parseInt(words[7]);
             board = new Board(fieldsize[0], fieldsize[1], fieldsize[2]);
             System.out.println("Game started:");
             System.out.println(board.toString());
@@ -240,14 +235,23 @@ public class Client extends Thread implements Connect4Client {
      */
     private void playerLeftHandler(String line){
         String[] words = line.split(" ");
-        if (words.length == 3 && words[1].matches("\\d+")){
-            System.out.println("Player " + words[1] + " left, Reason: " + words[2]);
+        if (words.length >= 3 && words[1].matches("\\d+")){
+            String reason = "";
+            for (int i = 2; i < words.length - 1; i++){
+                reason += " ";
+                reason += words[i];
+            }
+            System.out.println("Player " + words[1] + " left, Reason:" + reason);
             board.reset();
         } else {
             System.out.println("Something went terribly wrong...");
         }
     }
 
+    /**
+     * Translates and handles the "REPORT_ILLEGAL" command. (This should never happen!)
+     * @param line a <code>String</code> with the entire command including its arguments
+     */
     private void reportIllegalHandler(String line){
         System.out.println("A command has been flagged Illegal by the server:");
         System.out.println(line);

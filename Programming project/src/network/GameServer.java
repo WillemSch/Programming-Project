@@ -92,30 +92,36 @@ public class GameServer extends Thread{
         }
     }
 
-    private boolean checkWinner(){
-        if(board.hasWinner()){
+    /**
+     * A void that checks if there is a winner, and if so sends a GAMEEND message to the players.
+     */
+    private void checkWinner(){
+        if(board.hasWinner()) {
             ClientHandeler winner = null;
-            for(ClientHandeler c : players.keySet()){
-                if (board.isWinner(players.get(c))){
+            for (ClientHandeler c : players.keySet()) {
+                if (board.isWinner(players.get(c))) {
                     winner = c;
                 }
             }
 
-            for(ClientHandeler c : players.keySet()) {
+            for (ClientHandeler c : players.keySet()) {
                 //winner will always be initialized here so NPE will not happen
                 c.cmdGameEnd(winner.getClientId());
             }
-            return true;
-        }else {
-            return false;
         }
     }
 
+    /**
+     * Can be called by a <code>ClientHandeler</code> to say the client left the game.
+     * @param client A <code>ClientHandeler</code> of the client that left.
+     * @param reason A <code>String</code> which contains the reason the player left.
+     */
     public void leave(ClientHandeler client, String reason){
         for (ClientHandeler c : players.keySet()){
-            if (!c.equals(client)){
-                c.cmdPlayerLeft(client.getClientId(), reason);
-            }
+            c.cmdPlayerLeft(client.getClientId(), reason);
+            System.out.println("Did this");
         }
+
+        System.out.println("Did this");
     }
 }
