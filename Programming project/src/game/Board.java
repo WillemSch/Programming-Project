@@ -472,7 +472,6 @@ public class Board {
                 return isWinner(color);
             }
         }
-
 		return false;
 	}
 
@@ -482,14 +481,31 @@ public class Board {
 
 	public String toString() {
 		String result = "";
+		String result_2;
 		for (int i = 0; i < length; i++) {
 			String result_1 = "+-------+";
 			for (int j = 1; j < width; j++) {
 				result_1 += "-------+";
 			}
-			String result_2 = "|       |";
+			Integer[] coordinates = {0,i,0};
+			if (fields.containsKey(coordinates)) {
+				if (fields.get(coordinates).equals(players[1].getColor())) {
+					result_2 = "|  BLUE |";
+				} else if (fields.get(coordinates).equals(players[0].getColor())) {
+					result_2 = "|  RED  |";
+				} else {
+					result_2 = "|       |";
+				}
+			} else {
+				result_2 = "|       |";
+			}
 			for (int j = 1; j < width; j++) {
-				result_2 += "       |";
+				Integer[] coordinates_2 = {j,i,0};
+				if (fields.containsKey(coordinates_2)) {
+					result_2 = "|       |";
+				} else {
+					result_2 = "|       |";
+				}
 			}
 			result += result_1 + "\n" + result_2 + "\n";
 		}

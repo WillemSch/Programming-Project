@@ -1,38 +1,22 @@
 package game;
 
-import network.Client;
-
 public class Game extends Thread{
 
 	private int numberOfPlayers;
 
 	private Board board;
-
-	private Client client;
-
+	
 	private Player[] players;
 
 	private boolean isBusy;
 
 	private int current;
 
-	public Game(Board board, Client client) {
-		this.client = client;
+	public Game(Board board) {
 		this.board = board;
 		this.players = board.getPlayers();
 		numberOfPlayers = players.length;
 		current = 0;
-	}
-
-	public Game(Board board, Player[] players, boolean isClientsTurn) {
-		this.board = board;
-		this.players = players;
-		if (isClientsTurn){
-			current = 0;
-		} else {
-			current = 1;
-		}
-		numberOfPlayers = players.length;
 	}
 
 	public void run(){
@@ -60,6 +44,7 @@ public class Game extends Thread{
 				currPlayer = players[current];
 			}
 		}
+		printResult();
 	}
 
 	private void update() {

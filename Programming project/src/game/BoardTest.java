@@ -1,8 +1,10 @@
 package game;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 /**
  * @author willem
  * @version 1.0.0
@@ -16,7 +18,7 @@ public class BoardTest {
     /**
      * Setup the board and global variables.
      */
-    @BeforeEach
+    @Before
     public void setUp(){
         board = new Board(4, 4, 4);
         color1 = Color.BLUE;
@@ -29,12 +31,12 @@ public class BoardTest {
     @Test
     public void testSetField(){
         int[] coordinates = {0,0,0};
-        assert (board.setField(coordinates, color1));
-        assert (board.getField(coordinates).equals(color1));
+        assertTrue(board.setField(coordinates, color1));
+        assertEquals(board.getField(coordinates), color1);
 
         int[] coordinates2 = {0,1,0};
-        assert (board.setField(0,1, color1));
-        assert (board.getField(coordinates2).equals(color1));
+        assertTrue(board.setField(0,1, color1));
+        assertEquals(board.getField(coordinates2), color1);
     }
 
     /**
@@ -45,10 +47,9 @@ public class BoardTest {
         int x = 0;
         int y = 0;
 
-        assert (board.getHeightOfField(x,y) == 0);
-
-        board.setField(0,0,color1);
-        assert (board.getHeightOfField(x,y) == 1);
+        assertEquals(board.getHeightOfField(x,y), 0);
+        assertTrue(board.setField(0,0,color1));
+        assertEquals(board.getHeightOfField(x,y), 1);
     }
 
     /**
@@ -60,9 +61,9 @@ public class BoardTest {
         int[] isNotAField = {0,0,-1};
         int[] isNotAField2 = {0,0,5};
 
-        assert (board.isField(isRealField));
-        assert (!board.isField(isNotAField));
-        assert (!board.isField(isNotAField2));
+        assertTrue(board.isField(isRealField));
+        assertFalse(board.isField(isNotAField));
+        assertFalse(board.isField(isNotAField2));
     }
 
     /**
@@ -72,10 +73,10 @@ public class BoardTest {
     public void testIsEmptyField(){
         int[] coordinates = {0,0,0};
 
-        assert (board.isEmptyField(coordinates));
+        assertTrue(board.isEmptyField(coordinates));
 
-        board.setField(coordinates, color1);
-        assert (!board.isEmptyField(coordinates));
+        assertTrue(board.setField(coordinates, color1));
+        assertFalse(board.isEmptyField(coordinates));
     }
 
     /**
@@ -84,10 +85,10 @@ public class BoardTest {
     @Test
     public void testBoardReset(){
         int[] coordinates = {0,0,0};
-        board.setField(coordinates, color1);
+        assertTrue(board.setField(coordinates, color1));
 
         board.reset();
-        assert (board.isEmptyField(coordinates));
+        assertTrue(board.isEmptyField(coordinates));
     }
 
     /**
@@ -95,19 +96,16 @@ public class BoardTest {
      */
     @Test
     public void testWinner(){
-        int x = 0;
-        int y = 0;
-
-        assert (!board.hasWinner());
+        assertFalse(board.hasWinner());
 
         board.setField(0,0,color1);
         board.setField(1,1,color1);
         board.setField(2,2,color1);
         board.setField(3,3,color1);
-
-        assert (board.hasWinner());
-        assert (board.isWinner(color1));
-        assert (!board.isWinner(color2));
+        
+        assertTrue(board.hasWinner());
+        assertTrue(board.isWinner(color1));
+        assertFalse(board.isWinner(color2));
     }
 
     /**
