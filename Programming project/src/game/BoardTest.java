@@ -109,4 +109,71 @@ public class BoardTest {
         assert (board.isWinner(color1));
         assert (!board.isWinner(color2));
     }
+
+    /**
+     * Tests all getters of the <code>Board</code> class.
+     */
+    @Test
+    public void testQueries(){
+        assert (board.getLength() == 4);
+        assert (board.getHeigth() == 4);
+        assert (board.getWidth() == 4);
+        assert (board.getWinLength() == 4);
+    }
+
+    /**
+     * Tests the isFull() method of the board.
+     */
+    @Test
+    public void testIsFull(){
+        assert (!board.isFull());
+
+        for (int x = 0; x < 4; x++){
+            for (int y = 0; y < 4; y++){
+                for (int z = 0; z < 4; z++){
+                    board.setField(x,y, color1);
+                }
+            }
+        }
+        assert (board.isFull());
+    }
+
+    /**
+     * Tests the GameOver() method of the board.
+     */
+    @Test
+    public void testGameOver(){
+        assert (!board.gameOver());
+
+        for (int x = 0; x < 4; x++){
+            for (int y = 0; y < 4; y++){
+                for (int z = 0; z < 4; z++){
+                    board.setField(x,y, color1);
+                }
+            }
+        }
+        assert (board.gameOver());
+
+        board.reset();
+
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+        assert (board.gameOver());
+    }
+
+    /**
+     * Tests the deepCopy() method in <code>Board</code>
+     */
+    @Test
+    public void testDeepCopy(){
+        board.setField(0,0,color1);
+        Board copy = board.deepCopy();
+
+        assert (copy.getField(new int[]{0,0,0}).equals(color1));
+        copy.setField(0,1, color1);
+        assert (copy.getField(new int[]{0,1,0}).equals(color1));
+        assert (!board.getField(new int[]{0,1,0}).equals(color1));
+    }
 }

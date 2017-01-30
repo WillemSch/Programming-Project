@@ -87,7 +87,10 @@ public class Board {
 	}
 
 	public Board deepCopy() {
-		Board copy = this;
+		Board copy = new Board(getWidth(),getLength(),getHeigth(),getWinLength(),players);
+		for (int[] coord: fields.keySet()){
+		    copy.setField(coord, fields.get(coord));
+        }
 		return copy;
 	}
 
