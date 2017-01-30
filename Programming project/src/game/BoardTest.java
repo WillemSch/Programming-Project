@@ -39,4 +39,50 @@ public class BoardTest {
         board.setField(0,0,color1);
         assert (board.getHeightOfField(x,y) == 1);
     }
+
+    @Test
+    public void testIsField(){
+        int[] isRealField = {0,0,0};
+        int[] isNotAField = {0,0,-1};
+        int[] isNotAField2 = {0,0,5};
+
+        assert (board.isField(isRealField));
+        assert (!board.isField(isNotAField));
+        assert (!board.isField(isNotAField2));
+    }
+
+    @Test
+    public void testIsEmptyField(){
+        int[] coordinates = {0,0,0};
+
+        assert (board.isEmptyField(coordinates));
+
+        board.setField(coordinates, color1);
+        assert (!board.isEmptyField(coordinates));
+    }
+
+    @Test
+    public void testBoardReset(){
+        int[] coordinates = {0,0,0};
+        board.setField(coordinates, color1);
+
+        board.reset();
+        assert (board.isEmptyField(coordinates));
+    }
+
+    @Test
+    public void testWinner(){
+        int x = 0;
+        int y = 0;
+
+        assert (!board.hasWinner());
+
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+
+        assert (board.hasWinner());
+        assert (board.isWinner(color1));
+    }
 }
