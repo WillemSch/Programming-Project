@@ -138,7 +138,7 @@ public class Board {
 			// Test line over the x axes
 			for (int i = 1; x + i < width; i++) {
 				int[] square = { x + i, y, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -147,7 +147,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0; i++) {
 				int[] square = { x - i, y, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -163,7 +163,7 @@ public class Board {
 			// Test line over the y axes
 			for (int i = 1; y + i < length; i++) {
 				int[] square = { x, y + i, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -172,7 +172,7 @@ public class Board {
 
 			for (int i = 1; y - i >= 0; i++) {
 				int[] square = { x, y - i, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -188,7 +188,7 @@ public class Board {
 			// Test line over the z axes
 			for (int i = 1; z + i < heigth; i++) {
 				int[] square = { x, y, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -197,7 +197,7 @@ public class Board {
 
 			for (int i = 1; z - i >= 0; i++) {
 				int[] square = { x, y, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -213,7 +213,7 @@ public class Board {
 			// Test DiagonalDown on z plane
 			for (int i = 1; x + i < width && y - i >= 0; i++) {
 				int[] square = { x + i, y - i, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -222,7 +222,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0 && y + i < length; i++) {
 				int[] square = { x - i, y + i, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -238,7 +238,7 @@ public class Board {
 			// Test DiagonalUp on z plane
 			for (int i = 1; x + i < width && y + i < length; i++) {
 				int[] square = { x + i, y + i, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -247,7 +247,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0 && y - i >= 0; i++) {
 				int[] square = { x - i, y - i, z };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -263,7 +263,7 @@ public class Board {
 			// Test DiagonalDown on y plane
 			for (int i = 1; x + i < width && z >= 0; i++) {
 				int[] square = { x + i, y, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -272,7 +272,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0 && z + i < heigth; i++) {
 				int[] square = { x - i, y, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -288,7 +288,7 @@ public class Board {
 			// Test DiagonalUp on y plane
 			for (int i = 1; x + i < width && z + i < heigth; i++) {
 				int[] square = { x + i, y, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -297,7 +297,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0 && z - i >= 0; i++) {
 				int[] square = { x - i, y, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -313,7 +313,7 @@ public class Board {
 			// Test DiagonalDown on x plane
 			for (int i = 1; y + i < length && z >= 0; i++) {
 				int[] square = { x, y + i, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -322,7 +322,7 @@ public class Board {
 
 			for (int i = 1; y - i >= 0 && z + i < heigth; i++) {
 				int[] square = { x, y - i, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -338,7 +338,7 @@ public class Board {
 			// Test DiagonalUp on x plane
 			for (int i = 1; y + i < length && z - i >= 0; i++) {
 				int[] square = { x, y + i, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -347,7 +347,7 @@ public class Board {
 
 			for (int i = 1; y - i >= 0 && z + i < heigth; i++) {
 				int[] square = { x, y - i, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -363,7 +363,7 @@ public class Board {
 			// Test DiagonalDown on y x plane
 			for (int i = 1; x + i < width && y - i >= 0 && z >= 0; i++) {
 				int[] square = { x + i, y - i, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -372,7 +372,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0 && y + i < length && z + i < heigth; i++) {
 				int[] square = { x - i, y + i, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -388,7 +388,7 @@ public class Board {
 			// Test DiagonalUp on y x plane
 			for (int i = 1; x + i < width && y - i >= 0 && z + i < heigth; i++) {
 				int[] square = { x + i, y - i, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -397,7 +397,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0 && y + i < length && z - i >= 0; i++) {
 				int[] square = { x - i, y + i, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -413,7 +413,7 @@ public class Board {
 			// Test DiagonalDown on x y plane
 			for (int i = 1; x + i < width && y + i < length && z >= 0; i++) {
 				int[] square = { x + i, y + i, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -422,7 +422,7 @@ public class Board {
 
 			for (int i = 1; x - i >= 0 && y - i >= 0 && z + i < heigth; i++) {
 				int[] square = { x - i, y - i, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -438,7 +438,7 @@ public class Board {
 			// Test DiagonalUp on x y plane
 			for (int i = 1; x + i < width && y + i < length && z + i < heigth; i++) {
 				int[] square = { x + i, y + i, z + i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -447,7 +447,7 @@ public class Board {
 
 			for (int i = 1; x - i < width && y + i < length && z - i >= 0; i++) {
 				int[] square = { x + i, y + i, z - i };
-				if (isEmptyField(square) && fields.get(square).equals(m)) {
+				if (isUsedField(square) && fields.get(square).equals(m)) {
 					lineCount++;
 				} else {
 					break;
@@ -506,7 +506,7 @@ public class Board {
 	public boolean setField(int[] coordinates, Color m) {
 		lastMove = coordinates;
 		fields.put(coordinates, m);
-		return isEmptyField(coordinates);
+		return isUsedField(coordinates);
 	}
 
 	public boolean setField(int x, int y, Color m) {
@@ -514,7 +514,7 @@ public class Board {
 		int[] coordinates = { x, y, z };
 		lastMove = coordinates;
 		fields.put(coordinates, m);
-		return isEmptyField(coordinates);
+		return isUsedField(coordinates);
 	}
 
 	public int getHeightOfField(int x, int y) {
