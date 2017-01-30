@@ -34,8 +34,8 @@ public class ComputerPlayer extends Player {
     @Override
     //@ requires board != null;
     //@ ensures \result >= 0;
-    public Integer[] determineMove(Board board) {
-        Integer[] choice = strategy.determineMove(board, super.getColor());
+    public int[] determineMove(Board board) {
+        int[] choice = strategy.determineMove(board, super.getColor());
         String prompt = "> " + getName() + " (" + getColor().toString() + ")"
                 + ", chooses " + choice + ".";
         System.out.println(prompt);

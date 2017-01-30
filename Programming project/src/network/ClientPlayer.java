@@ -10,7 +10,7 @@ import game.Player;
  */
 public class ClientPlayer extends Player{
     private boolean hasNewMove;
-    private Integer[] move;
+    private int[] move;
 
     /**
      * Constructor of <code>ClientPlayer</code>. Starts a new thread for DetermineMove() because it has to wait until
@@ -27,9 +27,9 @@ public class ClientPlayer extends Player{
     /**
      * Waits for a new Move from the Client and returns that, this method is called in Game.
      * @param board The current <code>Board</code> of the active game.
-     * @return an <code>Integer[]</code> containing the x and y value of the move.
+     * @return an <code>int[]</code> containing the x and y value of the move.
      */
-    public synchronized Integer[] determineMove(Board board) {
+    public synchronized int[] determineMove(Board board) {
         while(!hasNewMove){
         }
         //Because the z-value isn't communicated over the network we have to calculate it ourselves
@@ -45,7 +45,7 @@ public class ClientPlayer extends Player{
      * @param y An <code>int</code> with the y-coordinate of the move.
      */
     public synchronized void giveMove(int x, int y){
-        move = new Integer[] {x, y, 0};
+        move = new int[] {x, y, 0};
         hasNewMove = true;
     }
 }

@@ -41,9 +41,9 @@ public class HumanPlayer extends Player {
 	 * @return the player's chosen field
 	 */
 
-	public Integer[] determineMove(Board board) {
+	public int[] determineMove(Board board) {
 		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice (write it in the form 'x y')?\n> ";
-		Integer[] choice = readInt(prompt, board);
+		int[] choice = readInt(prompt, board);
 		boolean valid = board.isField(choice) && board.isEmptyField(choice);
 		while (!valid) {
 			System.out.println("ERROR: chosen field is not a valid choice.");
@@ -61,7 +61,7 @@ public class HumanPlayer extends Player {
 	 *            the question to prompt the user
 	 * @return the first int value which is entered by the user
 	 */
-	private Integer[] readInt(String prompt, Board board) {
+	private int[] readInt(String prompt, Board board) {
 		boolean intRead = false;
 		int x = -1;
 		int y = -1;
@@ -83,14 +83,14 @@ public class HumanPlayer extends Player {
 					}
 				}
 			}
-			Integer[] coordinates = { x, y, z };
+			int[] coordinates = { x, y, z };
 			if (board.isField(coordinates)) {
 				intRead = true;
 			} else {
 				System.out.println("ERROR: chosen field is not a valid choice.");
 			}
 		} while (!intRead);
-		Integer[] coordinates = { x, y, z };
+		int[] coordinates = { x, y, z };
 		return coordinates;
 	}
 }
