@@ -13,67 +13,48 @@ import java.util.Map;
  * @Version 1.0.0
  * The controller of a game on the server.
  */
-public class GameServer {
+public class GameServer extends Thread{
     private Map<ClientHandeler, Color> players;
     private Board board;
+    private Server server;
+    private boolean playerLeft;
     private int turnOfIndex;
     private static final Color[] COLORS = {Color.BLUE, Color.RED};
-
-    //TODO: Fix this or Remove this!!!!
-    /**
-     * The constructor of the <code>GameServer</code> with a dynamic winlenght and board size. Assigns marks to
-     * the players and makes a board of the given size.
-     * @param players a <code>List</code> of <code>ClientHandeler</code>s of the players in the game
-     * @param boardSize an <code>int[]</code> containing the width, length and height of the board respectively
-     * @param winlength an <code>int</code> which represents the lenght of a row needed to win the game.
-     */
-    public GameServer(List<ClientHandeler> players, int[] boardSize, int winlength){
-        this.players = new LinkedHashMap<ClientHandeler, Color>();
-        for (int i =0; i < players.size(); i++) {
-            ClientHandeler c = players.get(i);
-            this.players.put(c, COLORS[i]);
-        }
-        this.turnOfIndex = 0;
-        //TODO: Fix last parameter
-        this.board = new Board(boardSize[0], boardSize[1], boardSize[2], winlength, board.getPlayers());
-    }
 
     /**
      * The constructor of the <code>GameServer</code>. Assigns marks to the players and makes a board.
      * @param players a <code>List</code> of <code>ClientHandeler</code>s of the players in the game
      */
-    public GameServer(List<ClientHandeler> players){
-        this.players = new LinkedHashMap<ClientHandeler, Color>();
+    public GameServer(List<ClientHandeler> players, Server server){
+        this.server = server;
+        this.players = new LinkedHashMap<>();
         for (int i =0; i < players.size(); i++) {
             ClientHandeler c = players.get(i);
             this.players.put(c, COLORS[i]);
+            c.setGameServer(this);
         }
         turnOfIndex = 0;
         this.board = new Board(4,4,4);
     }
 
     /**
-     * Makes a move on the board with the given coordinates and the given mark.
-     * @param x an <code>int</code> with the x coordinate of the move.
-     * @param y an <code>int</code> with the y coordinate of the move.
-     * @param player a <code>ClientHandeler</code> of the player making a move.
+     * Starts a game
      */
-    public void makeMove(int x, int y, ClientHandeler player){
-        Color color = players.get(player);
-        int nextPlayerId = new ArrayList<>(players.keySet()).get(turnOfIndex).getClientId();
-        boolean hasWinner = false;
-        if (board.setField(x, y, color)){
-            for (ClientHandeler c: players.keySet()){
-                c.cmdMoveSuccess(x, y, player.getClientId(), nextPlayerId);
-                if (board.isWinner(color)){
-                    c.cmdGameEnd(player.getClientId());
-                    hasWinner = true;
-                }
-            }
-        }
+    public void run(){
+        play();
+    }
 
-        if(hasWinner){
-            Server.removeGame(this);
+    /**
+     * Starts and executes the whole game, in the end it sends the commands to let the clients know.
+     */
+    private void play(){
+        List<ClientHandeler> listOfPlayers = new ArrayList<>(players.keySet());
+        for (int i = 0; i < listOfPlayers.size(); i++){
+            int otherIndex = (i + 1) % players.size();
+            System.out.println(i);
+            listOfPlayers.get(i).cmdGame(listOfPlayers.get(otherIndex).getName(),
+                    listOfPlayers.get(otherIndex).getClientId(), board.getWidth(), board.getLength(), board.getHeigth(),
+                    listOfPlayers.get(0).getClientId(), board.getWinLength());
         }
     }
 
@@ -92,5 +73,55 @@ public class GameServer {
      */
     private void nextIndex() {
         turnOfIndex = (turnOfIndex + 1) % players.size();
+    }
+
+    public boolean move(int idOfPlayer, int x, int y, ClientHandeler client){
+        List<ClientHandeler> listOfPlayers = new ArrayList<>(players.keySet());
+        Color color = players.get(client);
+        if(idOfPlayer == listOfPlayers.get(turnOfIndex).getClientId()){
+            board.setField(x, y, color);
+            nextIndex();
+            System.out.println(x + "-" + y);
+            checkWinner();
+            for (ClientHandeler c : players.keySet()){
+                c.cmdMoveSuccess(x, y, idOfPlayer, turnOfIndex);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * A void that checks if there is a winner, and if so sends a GAMEEND message to the players.
+     */
+    private void checkWinner(){
+        if(board.hasWinner()) {
+            ClientHandeler winner = null;
+            for (ClientHandeler c : players.keySet()) {
+                if (board.isWinner(players.get(c))) {
+                    winner = c;
+                }
+            }
+
+            for (ClientHandeler c : players.keySet()) {
+                //winner will always be initialized here so NPE will not happen
+                c.cmdGameEnd(winner.getClientId());
+            }
+        }
+    }
+
+    /**
+     * Can be called by a <code>ClientHandeler</code> to say the client left the game.
+     * @param client A <code>ClientHandeler</code> of the client that left.
+     * @param reason A <code>String</code> which contains the reason the player left.
+     */
+    public void leave(ClientHandeler client, String reason){
+        for (ClientHandeler c : players.keySet()){
+            c.cmdPlayerLeft(client.getClientId(), reason);
+            System.out.println("Did this");
+        }
+
+        System.out.println("Did this");
     }
 }

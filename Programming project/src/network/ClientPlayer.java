@@ -29,13 +29,8 @@ public class ClientPlayer extends Player{
      * @param board The current <code>Board</code> of the active game.
      * @return an <code>Integer[]</code> containing the x and y value of the move.
      */
-    public Integer[] determineMove(Board board) {
+    public synchronized Integer[] determineMove(Board board) {
         while(!hasNewMove){
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         //Because the z-value isn't communicated over the network we have to calculate it ourselves
         int z = board.getHeightOfField(move[0], move[1]);
@@ -49,9 +44,8 @@ public class ClientPlayer extends Player{
      * @param x An <code>int</code> with the x-coordinate of the move.
      * @param y An <code>int</code> with the y-coordinate of the move.
      */
-    public void giveMove(int x, int y){
+    public synchronized void giveMove(int x, int y){
         move = new Integer[] {x, y, 0};
         hasNewMove = true;
-        notifyAll();
     }
 }
