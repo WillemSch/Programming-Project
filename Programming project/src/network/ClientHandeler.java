@@ -40,10 +40,11 @@ public class ClientHandeler extends Thread implements Connect4Server{
     private static final String MOVE = "MOVE";
     private static final String WELCOME = "WELCOME";
     private static final String GAME = "GAME";
-    private static final String MOVESUCCESS = "MOVESUCCESS";
-    private static final String GAMEEND = "GAMEEND";
-    private static final String REPORTILLEGAL = "REPORTILLEGAL";
-    private static final String PLAYERLEFT = "PLAYERLEFT";
+    private static final String MOVESUCCESS = "MOVE_SUCCESS";
+    private static final String GAMEEND = "GAME_END";
+    private static final String REPORTILLEGAL = "ILLEGAL";
+    private static final String PLAYERLEFT = "LEFT";
+    private static final String REQUEST = "REQUEST";
 
     /**
      * The constructor of the ClientHandeler
@@ -98,6 +99,9 @@ public class ClientHandeler extends Thread implements Connect4Server{
                     case MOVE:
                         handleMove(line);
                         break;
+                    case REQUEST:
+                        handleRequest(line);
+                        break;
                     default:
                         cmdReportIllegal(line);
                 }
@@ -121,8 +125,10 @@ public class ClientHandeler extends Thread implements Connect4Server{
             int x = Integer.parseInt(words[1]);
             int y = Integer.parseInt(words[2]);
             move = new int[] {x,y};
-            if(timer.isAlive() && !sendMove(move)){
+            if(timer.isAlive() && sendMove(move)){
                 timer.interrupt();
+                game.move(id, x, y, this);
+            } else {
                 cmdReportIllegal(line);
             }
         } else {
@@ -136,10 +142,10 @@ public class ClientHandeler extends Thread implements Connect4Server{
      */
     private void handleHello(String line){
         String[] words = line.split(" ");
-        if(words.length == 4 && words[2].matches("\\d+") && (words[3].equals("true")
-                || words[3].equals("false"))){
+        if(words.length == 4 && words[3].matches("\\d+") && (words[2].equals("true")
+                || words[2].equals("false"))){
             name = words[1];
-            boolean ai = words[3].equals("true");
+            boolean ai = words[2].equals("true");
             System.out.println(ai);
             if(ai){
                 cmdWelcome(nextId, aiThinkingTime, 0);
@@ -148,11 +154,17 @@ public class ClientHandeler extends Thread implements Connect4Server{
                 cmdWelcome(nextId, humanThinkingTime, 0);
                 thinkingTime = humanThinkingTime;
             }
-            System.out.println(server);
-            server.addToWaiting(this);
         } else {
             cmdReportIllegal(line);
         }
+    }
+
+    /**
+     * When the client sends a request command it gets added to the waiting list
+     * @param line the <code>String</code> with the command
+     */
+    private void handleRequest(String line){
+        server.addToWaiting(this);
     }
 
     /**
@@ -166,7 +178,10 @@ public class ClientHandeler extends Thread implements Connect4Server{
     public void cmdMoveSuccess(int moveX, int moveY, int actorID, int playerWhoHasNextTurnID) {
         String message = String.format("%1$s %2$d %3$d %4$d %5$d", MOVESUCCESS, moveX, moveY, actorID, playerWhoHasNextTurnID);
         send(message);
+
+        System.out.println(playerWhoHasNextTurnID);
         if (playerWhoHasNextTurnID == id){
+            System.out.println(id);
             turnOfThisClient = true;
             timer = new Timer(thinkingTime, this);
             timer.start();
@@ -193,6 +208,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
     public void cmdGameEnd(int winnerID) {
         String message = String.format("%1$s %2$d", GAMEEND, winnerID);
         send(message);
+        removeFromGame();
     }
 
     /**
@@ -211,6 +227,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
         String message = String.format("%1$s %2$s %3$d %4$d %5$d %6$d %7$d %8$d", GAME, nameOtherPlayer,
                 otherPlayerID, playFieldX, playFieldY, playFieldZ, playerWhoHasNextTurnID, sequenceLengthOfWin);
         send(message);
+        turnOfThisClient = playerWhoHasNextTurnID == id;
         if(playerWhoHasNextTurnID == id) {
             timer = new Timer(thinkingTime, this);
             timer.start();

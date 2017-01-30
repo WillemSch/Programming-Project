@@ -105,7 +105,7 @@ public class Client extends Thread implements Connect4Client {
      */
     public void run() {
         try {
-            cmdHello("me", 0, false);
+            cmdHello("me", false, 0);
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -118,16 +118,16 @@ public class Client extends Thread implements Connect4Client {
                         case "GAME":
                             gameHandler(line);
                             break;
-                        case "GAMEEND":
+                        case "GAME_END":
                             gameEndHandler(line);
                             break;
-                        case "MOVESUCCESS":
+                        case "MOVE_SUCCESS":
                             moveSuccessHandler(line);
                             break;
-                        case "PLAYERLEFT":
+                        case "LEFT":
                             playerLeftHandler(line);
                             break;
-                        case "REPORTILLEGAL":
+                        case "ILLEGAL":
                             reportIllegalHandler(line);
                             break;
                         default:
@@ -154,6 +154,7 @@ public class Client extends Thread implements Connect4Client {
             id = Integer.parseInt(words[1]);
             thinkingTime = Long.parseLong(words[2]);
             int serverCapabilities = Integer.parseInt(words[3]);
+            cmdRequest();
         } else {
             System.out.println("Something went terribly wrong...");
         }
@@ -204,6 +205,7 @@ public class Client extends Thread implements Connect4Client {
             System.out.println("Something went terribly wrong...");
         }
         board.reset();
+        cmdRequest();
     }
 
     /**
@@ -217,7 +219,7 @@ public class Client extends Thread implements Connect4Client {
             int xCoordinate = Integer.parseInt(words[1]);
             int yCoordinate = Integer.parseInt(words[2]);
             int nextPlayerId = Integer.parseInt(words[4]);
-            if (nextPlayerId != id){
+            if (nextPlayerId == id){
                 board.setField(xCoordinate, yCoordinate, opponentColor);
                 System.out.println("Opponent made move: " + xCoordinate + " - " + yCoordinate);
                 System.out.println(board.toString());
@@ -266,8 +268,8 @@ public class Client extends Thread implements Connect4Client {
      * @param isAI <code>true</code> indicates that the user that is registering is a computer player. <code>false</code> indicates a human player.
      */
     @Override
-    public void cmdHello(String username, int clientCapabilities, boolean isAI) {
-        String command = "HELLO " + username + " " + clientCapabilities + " " + isAI;
+    public void cmdHello(String username, boolean isAI, int clientCapabilities) {
+        String command = "HELLO " + username + " " + isAI + " " + clientCapabilities;
         writer.println(command);
         writer.flush();
     }
@@ -280,6 +282,16 @@ public class Client extends Thread implements Connect4Client {
     @Override
     public void cmdMove(int x, int y) {
         String command = "MOVE " + x + " " + y;
+        writer.println(command);
+        writer.flush();
+    }
+
+    /**
+     * Sends a Request command to the server saying it's ready for a game.
+     */
+    @Override
+    public void cmdRequest(){
+        String command = "REQUEST";
         writer.println(command);
         writer.flush();
     }
