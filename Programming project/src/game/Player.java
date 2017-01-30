@@ -61,7 +61,7 @@ public abstract class Player {
      *            the current game board
      * @return the player's choice
      */
-    public abstract Integer[] determineMove(Board board);
+    public abstract int[] determineMove(Board board);
 
     // -- Commands ---------------------------------------------------
 
@@ -75,7 +75,7 @@ public abstract class Player {
      *            the current board
      */
     public void makeMove(Board board) {
-        Integer[] move = determineMove(board);
+        int[] move = determineMove(board);
         client.cmdMove(move[0], move[1]);
         board.setField(move, getColor());
     }

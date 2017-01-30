@@ -1,11 +1,12 @@
 package game;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Board {
 
-	private Map<Integer[], Color> fields;
+	private Map<int[], Color> fields;
 
 	private int length;
 	private int width;
@@ -14,7 +15,7 @@ public class Board {
 
 	private Player[] players;
 
-	private Integer[] lastMove = {};
+	private int[] lastMove = {};
 
 	public Board(int width, int length, int heigth) {
 		this.length = length;
@@ -26,7 +27,7 @@ public class Board {
 		}
 		this.heigth = heigth;
 		this.winLength = 4;
-		this.fields = new HashMap<Integer[], Color>();
+		this.fields = new HashMap<>();
 	}
 
 	public Board(int width, int length, int heigth, Player[] players) {
@@ -40,7 +41,7 @@ public class Board {
 		this.heigth = heigth;
 		this.winLength = 4;
 		this.players = players;
-		this.fields = new HashMap<Integer[], Color>();
+		this.fields = new HashMap<>();
 	}
 
 	public Board(int width, int length, int heigth, int winLength, Player[] players) {
@@ -53,7 +54,7 @@ public class Board {
 		}
 		this.winLength = winLength;
 		this.players = players;
-		this.fields = new HashMap<Integer[], Color>();
+		this.fields = new HashMap<>();
 	}
 
 	public int getLength() {
@@ -81,19 +82,30 @@ public class Board {
 		return copy;
 	}
 
-	public boolean isField(Integer[] coordinates) {
+	public boolean isField(int[] coordinates) {
 		int x = coordinates[0];
 		int y = coordinates[1];
 		int z = coordinates[2];
 		return (x >= 0 && x < width) && (y >= 0 && y < length) && (z >= 0 && z < heigth);
 	}
 
-	public Color getField(Integer[] coordinates) {
-		return fields.get(coordinates);
+	public Color getField(int[] coordinates) {
+		for (int[] i : fields.keySet()){
+			if(Arrays.equals(i, coordinates)){
+				return fields.get(i);
+			}
+		}
+		Color color = Color.NONE;
+		return color;
 	}
 
-	public boolean isEmptyField(Integer[] coordinates) {
-		return !fields.containsKey(coordinates);
+	public boolean isEmptyField(int[] coordinates) {
+        for (int[] i : fields.keySet()){
+            if(Arrays.equals(i, coordinates)){
+                return false;
+            }
+        }
+        return true;
 	}
 
 	public boolean isFull() {
@@ -479,29 +491,26 @@ public class Board {
 	}
 
 	public void reset() {
-		this.fields = new HashMap<Integer[], Color>();
+		this.fields = new HashMap<>();
 	}
 
-	public boolean setField(Integer[] coordinates, Color m) {
+	public boolean setField(int[] coordinates, Color m) {
 		lastMove = coordinates;
 		fields.put(coordinates, m);
 		return fields.containsKey(coordinates);
 	}
 
 	public boolean setField(int x, int y, Color m) {
-		int z = getHeightOfField(x, y) + 1;
-		Integer[] coordinates = { x, y, z };
-		if (isField(coordinates)) {
-			setField(coordinates, m);
-			return true;
-		} else {
-			return false;
-		}
+		int z = getHeightOfField(x, y);
+		int[] coordinates = { x, y, z };
+		lastMove = coordinates;
+		fields.put(coordinates, m);
+		return fields.containsKey(coordinates);
 	}
 
 	public int getHeightOfField(int x, int y) {
 		for (int i = 0; i < heigth; i++) {
-			Integer[] coordinates = { x, y, i };
+			int[] coordinates = { x, y, i };
 			if (isEmptyField(coordinates)) {
 				return i;
 			}

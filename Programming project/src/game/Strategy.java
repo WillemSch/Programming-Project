@@ -6,5 +6,5 @@ package game;
 public interface Strategy {
     public String getName();
 
-    public Integer[] determineMove(Board board, Color color);
+    public int[] determineMove(Board board, Color color);
 }
