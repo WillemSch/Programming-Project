@@ -19,7 +19,7 @@ public class Board {
 	public Board(int width, int length, int heigth) {
 		this.length = length;
 		this.width = width;
-		if (heigth < 1) {
+		if (heigth == -1) {
 			this.heigth = Integer.MAX_VALUE;
 		} else {
 			this.heigth = heigth;
@@ -32,7 +32,7 @@ public class Board {
 	public Board(int width, int length, int heigth, Player[] players) {
 		this.length = length;
 		this.width = width;
-		if (heigth < 1) {
+		if (heigth == -1) {
 			this.heigth = Integer.MAX_VALUE;
 		} else {
 			this.heigth = heigth;
@@ -46,7 +46,7 @@ public class Board {
 	public Board(int width, int length, int heigth, int winLength, Player[] players) {
 		this.length = length;
 		this.width = width;
-		if (heigth < 0) {
+		if (heigth == -1) {
 			this.heigth = Integer.MAX_VALUE;
 		} else {
 			this.heigth = heigth;
@@ -466,8 +466,6 @@ public class Board {
 	}
 
 	public String toString() {
-		Integer[] coor = {0,0,0};
-		fields.put(coor, Color.BLUE);
 		String result = "";
 		String result_2;
 		for (int i = 0; i < length; i++) {
@@ -476,10 +474,10 @@ public class Board {
 				result_1 += "-------+";
 			}
 			Integer[] coordinates = {0,i,0};
-			if (!isEmptyField(coordinates)) {
-				if (fields.get(coordinates).equals(Color.BLUE)) {
+			if (fields.containsKey(coordinates)) {
+				if (fields.get(coordinates).equals(players[1].getColor())) {
 					result_2 = "|  BLUE |";
-				} else if (fields.get(coordinates).equals(Color.RED)) {
+				} else if (fields.get(coordinates).equals(players[0].getColor())) {
 					result_2 = "|  RED  |";
 				} else {
 					result_2 = "|       |";
@@ -488,17 +486,11 @@ public class Board {
 				result_2 = "|       |";
 			}
 			for (int j = 1; j < width; j++) {
-				Integer[] coordinates_2 = {j,j - 1,0};
-				if (!isEmptyField(coordinates_2)) {
-					if (fields.get(coordinates_2).equals(Color.BLUE)) {
-						result_2 += "  BLUE |";
-					} else if (fields.get(coordinates_2).equals(Color.RED)) {
-						result_2 += "  RED  |";
-					} else {
-						result_2 += "       |";
-					}
+				Integer[] coordinates_2 = {j,i,0};
+				if (fields.containsKey(coordinates_2)) {
+					result_2 = "|       |";
 				} else {
-					result_2 += "       |";
+					result_2 = "|       |";
 				}
 			}
 			result += result_1 + "\n" + result_2 + "\n";

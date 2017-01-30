@@ -42,11 +42,11 @@ public class HumanPlayer extends Player {
 	 */
 
 	public Integer[] determineMove(Board board) {
-		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice (write it in the form 'x y')? ";
+		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice (write it in the form 'x y')?\n> ";
 		Integer[] choice = readInt(prompt, board);
 		boolean valid = board.isField(choice) && board.isEmptyField(choice);
 		while (!valid) {
-			System.out.println("ERROR: field " + choice[0] + "," + choice[1] + " is no valid choice.");
+			System.out.println("ERROR: chosen field is not a valid choice.");
 			choice = readInt(prompt, board);
 			valid = board.isField(choice) && board.isEmptyField(choice);
 		}
