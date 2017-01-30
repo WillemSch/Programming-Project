@@ -12,6 +12,7 @@ public class SmartStrategy implements Strategy {
     @Override
     public Integer[] determineMove(Board board, Color color) {
     	Integer[] coordinates = {0,0,0};
+
         return coordinates;
     }
 }

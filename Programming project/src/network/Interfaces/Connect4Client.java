@@ -12,7 +12,7 @@ public interface Connect4Client {
 	 * for the associated capability.
 	 * @param isAI <code>true</code> indicates that the user that is registering is a computer player. <code>false</code> indicates a human player.
 	 */
-    void cmdHello(String username, int clientCapabilities, boolean isAI);
+    void cmdHello(String username, boolean isAI, int clientCapabilities);
 	
 	/** 
 	 * The x and y coordinate of the desired move. The coordinate system is defined as follows: <br>
@@ -30,4 +30,9 @@ public interface Connect4Client {
 	 * @param y the y coordinate of the move
 	 */
     void cmdMove(int x, int y);
+
+	/**
+	 * Tells the server its ready for a game.
+	 */
+	void cmdRequest();
 }
