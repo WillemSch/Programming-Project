@@ -13,8 +13,9 @@ public class HumanPlayer extends Player {
 	// -- Constructors -----------------------------------------------
 
 	/*
-	 * @ requires name != null; requires mark == Color.RED || mark == Color.BLUE;
-	 * ensures this.getName() == name; ensures this.getColor() == mark;
+	 * @ requires name != null; requires mark == Color.RED || mark ==
+	 * Color.BLUE; ensures this.getName() == name; ensures this.getColor() ==
+	 * mark;
 	 */
 	/**
 	 * Creates a new human player object.
@@ -39,12 +40,9 @@ public class HumanPlayer extends Player {
 	 *            the game board
 	 * @return the player's chosen field
 	 */
-	private int x;
-	private int y;
-	private int z;
 
 	public Integer[] determineMove(Board board) {
-		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice? ";
+		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice (write it in the form 'x y')? ";
 		Integer[] choice = readInt(prompt, board);
 		boolean valid = board.isField(choice) && board.isEmptyField(choice);
 		while (!valid) {
@@ -65,6 +63,9 @@ public class HumanPlayer extends Player {
 	 */
 	private Integer[] readInt(String prompt, Board board) {
 		boolean intRead = false;
+		int x = -1;
+		int y = -1;
+		int z = -1;
 		@SuppressWarnings("resource")
 		Scanner line = new Scanner(System.in);
 		do {
@@ -74,7 +75,7 @@ public class HumanPlayer extends Player {
 					String in_1 = scannerLine.next();
 					if (scannerLine.hasNext()) {
 						String in_2 = scannerLine.next();
-						if (in_1.matches("\\d+") && in_2.matches("\\d+")) {
+						if (in_1.matches("\\d+") && in_2.matches("\\d+") && !scannerLine.hasNext()) {
 							x = Integer.parseInt(in_1);
 							y = Integer.parseInt(in_2);
 							z = board.getHeightOfField(x, y);
@@ -86,7 +87,7 @@ public class HumanPlayer extends Player {
 			if (board.isField(coordinates)) {
 				intRead = true;
 			} else {
-				System.out.println("error" + z);
+				System.out.println("ERROR: chosen field is not a valid choice.");
 			}
 		} while (!intRead);
 		Integer[] coordinates = { x, y, z };

@@ -76,7 +76,7 @@ public abstract class Player {
      */
     public void makeMove(Board board) {
         Integer[] move = determineMove(board);
-        client.cmdMove(move[0], move[1]);
+        //client.cmdMove(move[0], move[1]);
         board.setField(move, getColor());
     }
 

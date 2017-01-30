@@ -19,7 +19,7 @@ public class Board {
 	public Board(int width, int length, int heigth) {
 		this.length = length;
 		this.width = width;
-		if (heigth == -1) {
+		if (heigth < 1) {
 			this.heigth = Integer.MAX_VALUE;
 		} else {
 			this.heigth = heigth;
@@ -32,7 +32,7 @@ public class Board {
 	public Board(int width, int length, int heigth, Player[] players) {
 		this.length = length;
 		this.width = width;
-		if (heigth == -1) {
+		if (heigth < 1) {
 			this.heigth = Integer.MAX_VALUE;
 		} else {
 			this.heigth = heigth;
@@ -46,7 +46,7 @@ public class Board {
 	public Board(int width, int length, int heigth, int winLength, Player[] players) {
 		this.length = length;
 		this.width = width;
-		if (heigth == -1) {
+		if (heigth < 0) {
 			this.heigth = Integer.MAX_VALUE;
 		} else {
 			this.heigth = heigth;
@@ -79,6 +79,14 @@ public class Board {
 	public Board deepCopy() {
 		Board copy = this;
 		return copy;
+	}
+
+	public Integer[] coordinates(int index) {
+		int z = index / (width * length);
+		int y = (index / length) - (z * width);
+		int x = (index / width) - (z * length) - y;
+		Integer[] coordinates = { x, y, z };
+		return coordinates;
 	}
 
 	public boolean isField(Integer[] coordinates) {
@@ -442,7 +450,7 @@ public class Board {
 	}
 
 	public boolean hasWinner() {
-		if(players != null){
+		if (players != null) {
 			for (Player player : players) {
 				Color m = player.getColor();
 				if (isWinner(m)) {
@@ -458,15 +466,40 @@ public class Board {
 	}
 
 	public String toString() {
+		Integer[] coor = {0,0,0};
+		fields.put(coor, Color.BLUE);
 		String result = "";
+		String result_2;
 		for (int i = 0; i < length; i++) {
 			String result_1 = "+-------+";
 			for (int j = 1; j < width; j++) {
 				result_1 += "-------+";
 			}
-			String result_2 = "|       |";
+			Integer[] coordinates = {0,i,0};
+			if (!isEmptyField(coordinates)) {
+				if (fields.get(coordinates).equals(Color.BLUE)) {
+					result_2 = "|  BLUE |";
+				} else if (fields.get(coordinates).equals(Color.RED)) {
+					result_2 = "|  RED  |";
+				} else {
+					result_2 = "|       |";
+				}
+			} else {
+				result_2 = "|       |";
+			}
 			for (int j = 1; j < width; j++) {
-				result_2 += "       |";
+				Integer[] coordinates_2 = {j,j - 1,0};
+				if (!isEmptyField(coordinates_2)) {
+					if (fields.get(coordinates_2).equals(Color.BLUE)) {
+						result_2 += "  BLUE |";
+					} else if (fields.get(coordinates_2).equals(Color.RED)) {
+						result_2 += "  RED  |";
+					} else {
+						result_2 += "       |";
+					}
+				} else {
+					result_2 += "       |";
+				}
 			}
 			result += result_1 + "\n" + result_2 + "\n";
 		}
@@ -489,7 +522,7 @@ public class Board {
 	}
 
 	public boolean setField(int x, int y, Color m) {
-		int z = getHeightOfField(x, y) + 1;
+		int z = getHeightOfField(x, y);
 		Integer[] coordinates = { x, y, z };
 		if (isField(coordinates)) {
 			setField(coordinates, m);
