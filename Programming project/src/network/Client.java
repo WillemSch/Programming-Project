@@ -66,7 +66,7 @@ public class Client extends Thread implements Connect4Client {
      * @param args A <code>String[]</code> which is used to determine the type of player and server. Arguments: <name> <address> <port>
      */
     public static void main(String[] args) {
-        args = new String[]{"name", "localhost", "4040"};
+        args = new String[]{"me", "localhost", "4040"};
 
         if (args.length != 3) {
             System.out.println(USAGE);
@@ -282,6 +282,7 @@ public class Client extends Thread implements Connect4Client {
     @Override
     public void cmdMove(int x, int y) {
         String command = "MOVE " + x + " " + y;
+        System.out.println("uhfashgjkajhsdk");
         writer.println(command);
         writer.flush();
     }

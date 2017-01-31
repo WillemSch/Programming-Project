@@ -146,7 +146,6 @@ public class ClientHandeler extends Thread implements Connect4Server{
                 || words[2].equals("false"))){
             name = words[1];
             boolean ai = words[2].equals("true");
-            System.out.println(ai);
             if(ai){
                 cmdWelcome(nextId, aiThinkingTime, 0);
                 thinkingTime = aiThinkingTime;
@@ -179,9 +178,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
         String message = String.format("%1$s %2$d %3$d %4$d %5$d", MOVESUCCESS, moveX, moveY, actorID, playerWhoHasNextTurnID);
         send(message);
 
-        System.out.println(playerWhoHasNextTurnID);
         if (playerWhoHasNextTurnID == id){
-            System.out.println(id);
             turnOfThisClient = true;
             timer = new Timer(thinkingTime, this);
             timer.start();
@@ -231,7 +228,6 @@ public class ClientHandeler extends Thread implements Connect4Server{
         if(playerWhoHasNextTurnID == id) {
             timer = new Timer(thinkingTime, this);
             timer.start();
-            System.out.println("started" + timer.isAlive());
         }
     }
 
