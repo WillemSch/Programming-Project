@@ -1,7 +1,11 @@
-package game;
+package game.tests;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import game.Board;
+import game.Color;
+import game.players.strategies.SmartStrategy;
+import game.players.strategies.Strategy;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Willem
@@ -17,7 +21,7 @@ public class SmartStrategyTest {
     /**
      * Sets up all class variables
      */
-    @BeforeEach
+    @Before
     public void setUp(){
         board = new Board(4,4,4);
         strategy = new SmartStrategy();

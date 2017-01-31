@@ -1,4 +1,4 @@
-package network.Interfaces;
+package network.interfaces;
 
 public interface LobbyCapabilityServer {
 	

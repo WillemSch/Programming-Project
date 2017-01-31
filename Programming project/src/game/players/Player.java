@@ -1,6 +1,8 @@
-package game;
+package game.players;
 
-import network.Client;
+import game.Board;
+import game.Color;
+import network.client.Client;
 
 /**
  * Abstract class for keeping a player in the Connect Four game. 
@@ -76,7 +78,9 @@ public abstract class Player {
      */
     public void makeMove(Board board) {
         int[] move = determineMove(board);
-        client.cmdMove(move[0], move[1]);
+        if(client != null) {
+            client.cmdMove(move[0], move[1]);
+        }
         board.setField(move, getColor());
     }
 

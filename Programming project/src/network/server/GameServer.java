@@ -1,4 +1,4 @@
-package network;
+package network.server;
 
 import game.Board;
 import game.Color;
@@ -50,7 +50,7 @@ public class GameServer extends Thread{
         for (int i = 0; i < players.size(); i++){
             int otherIndex = (i + 1) % players.size();
             players.get(i).cmdGame(players.get(otherIndex).getName(),
-                    players.get(otherIndex).getClientId(), board.getWidth(), board.getLength(), board.getHeigth(),
+                    players.get(otherIndex).getClientId(), board.getWidth(), board.getLength(), board.getHeight(),
                     players.get(turnOfIndex).getClientId(), board.getWinLength());
         }
     }
@@ -59,7 +59,7 @@ public class GameServer extends Thread{
      * Sends a message to all players of this game
      * @param message a <code>String</code> that contains the message which is to be send
      */
-    private void broadcast (String message){
+    public void broadcast (String message){
         for(ClientHandeler c : players){
             c.send(message);
         }
@@ -68,7 +68,7 @@ public class GameServer extends Thread{
     /**
      * Changes the turnOfIndex into the next index, if it is at the last index it starts again at 0.
      */
-    private void nextIndex() {
+    public void nextIndex() {
         turnOfIndex = (turnOfIndex + 1) % players.size();
     }
 
@@ -106,7 +106,7 @@ public class GameServer extends Thread{
      * A boolean that checks if there is a winner, and if so sends a GAMEEND message to the players.
      * @return <code>true</code> if there is a winner, or a draw, <code>false</code> if not.
      */
-    private boolean checkWinner(){
+    public boolean checkWinner(){
         if(board.hasWinner()) {
             ClientHandeler winner = null;
             for (int i = 0; i < players.size(); i++) {

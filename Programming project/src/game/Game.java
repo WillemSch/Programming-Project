@@ -1,8 +1,13 @@
 package game;
 
+import game.players.Player;
+import game.ui.GameTUIView;
+
 public class Game extends Thread{
 
 	private int numberOfPlayers;
+
+	private GameTUIView view;
 
 	private Board board;
 	
@@ -17,6 +22,7 @@ public class Game extends Thread{
 		this.players = board.getPlayers();
 		numberOfPlayers = players.length;
 		current = 0;
+		view = new GameTUIView();
 	}
 
 	public void run(){
@@ -37,26 +43,24 @@ public class Game extends Thread{
 		isBusy = true;
 		Player currPlayer = players[current];
 		while (isBusy) {
-			update();
-			synchronized (currPlayer) {
-				currPlayer.makeMove(board);
-				current = (current + 1) % numberOfPlayers;
-				currPlayer = players[current];
-			}
-		}
+            update();
+            currPlayer.makeMove(board);
+            current = (current + 1) % numberOfPlayers;
+            currPlayer = players[current];
+        }
 		printResult();
 	}
 
 	private void update() {
-		System.out.println("\ncurrent game situation: \n\n" + board.toString() + "\n");
+		view.print("\ncurrent game situation: \n\n" + board.toString() + "\n");
 	}
 
 	private void printResult() {
 		if (board.hasWinner()) {
 			Player winner = board.isWinner(players[0].getColor()) ? players[0] : players[1];
-			System.out.println("Player " + winner.getName() + " (" + winner.getColor().toString() + ") has won!");
+			view.print("Player " + winner.getName() + " (" + winner.getColor().toString() + ") has won!");
 		} else {
-			System.out.println("Draw. There is no winner!");
+			view.print("Draw. There is no winner!");
 		}
 	}
 
@@ -66,11 +70,11 @@ public class Game extends Thread{
      */
 	public void forceWinner(Player player){
 		isBusy = false;
-        System.out.println("Player " + player.getName() + " (" + player.getColor().toString() + ") has won!");
+        view.print("Player " + player.getName() + " (" + player.getColor().toString() + ") has won!");
     }
 
     public void forceDraw(){
 		isBusy = false;
-		System.out.println("It's a draw, we'll get 'em next time.");
+		view.print("It's a draw, we'll get 'em next time.");
 	}
 }

@@ -1,4 +1,4 @@
-package network;
+package network.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,16 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author Willem Schooltink
- * @Version 1.0.0
+ * @author Willem Schooltink
+ * @version 1.0.0
  * Starts the server to which clients can connect.
  */
-public class Server {
+public class Server extends Thread{
 
     private static final String USAGE = "usage: <port>";
     private List<ClientHandeler> clients;
     private List<ClientHandeler> waitingClients;
     private List<GameServer> games;
+    private int port;
 
     /**
      * The Constructor
@@ -26,17 +27,19 @@ public class Server {
         clients = new ArrayList<>();
         waitingClients = new ArrayList<>();
         games = new ArrayList<>();
-        //The acceptor and matchMaker must run simultaniously, so a Thread is created for acceptClient.
+        this.port = port;
+    }
+
+    public void run(){
         acceptClient(port);
     }
 
     /**
-     * The main function which initiates the Server with the requested port.
+     * The main function which initiates the server with the requested port.
      * @param args contains 1 value: the port on which the server will run.
      */
-    //TODO: ask for port, address and name
     public static void main(String[] args){
-        //TODO: Remove line below
+        /*The line below makes it possible to test without giving any input in main*/
         args = new String[] {"4040"};
         if (args.length != 1) {
             System.out.println(USAGE);
@@ -44,6 +47,7 @@ public class Server {
         }
         int port = Integer.valueOf(args[0]);
         Server server = new Server(port);
+        server.run();
     }
 
     /**
@@ -103,7 +107,7 @@ public class Server {
      * Sends a given string to all connected clients.
      * @param message A <code>String</code> with the message which is to be send.
      */
-    private void broadCast(String message){
+    public void broadCast(String message){
         for (ClientHandeler c : clients){
             c.send(message);
         }
@@ -115,5 +119,21 @@ public class Server {
      */
     public void removeGame(GameServer game){
         games.remove(game);
+    }
+
+    /**
+     * Gets the list of all active clientHandelers.
+     * @return a <code>List<ClientHandeler></code> with all active clienthandelers.
+     */
+    public List<ClientHandeler> getClients(){
+        return clients;
+    }
+
+    /**
+     * Gets the list of all active games.
+     * @return a <code>List<GameServer></code> with all active GameServers.
+     */
+    public List<GameServer> getGames(){
+        return games;
     }
 }

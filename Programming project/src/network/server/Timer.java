@@ -1,4 +1,4 @@
-package network;
+package network.server;
 
 /**
  * @author willem
@@ -30,7 +30,7 @@ public class Timer extends Thread {
             try {
                 wait(waitingTime);
                 //if the timer is not inerrupted in the time given it tells the client to leave the game.
-                client.leave("Client took too long to respond.");
+                client.leave("client took too long to respond.");
                 System.out.println("Left");
             } catch (InterruptedException e) {
             }

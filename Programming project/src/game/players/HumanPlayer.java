@@ -1,14 +1,19 @@
-package game;
+package game.players;
+
+import game.Board;
+import game.Color;
+import game.ui.GameTUIView;
 
 import java.util.Scanner;
-
 /**
  * Class for maintaining a human player in Connect Four.
- * 
+ *
  * @author Jesper Simon
  * @version $Revision: 2.0 $
  */
 public class HumanPlayer extends Player {
+
+	GameTUIView gameView;
 
 	// -- Constructors -----------------------------------------------
 
@@ -19,10 +24,11 @@ public class HumanPlayer extends Player {
 	 */
 	/**
 	 * Creates a new human player object.
-	 * 
+	 *
 	 */
 	public HumanPlayer(String name, Color color) {
 		super(name, color);
+		gameView = new GameTUIView();
 	}
 
 	// -- Commands ---------------------------------------------------
@@ -30,23 +36,24 @@ public class HumanPlayer extends Player {
 	/*
 	 * @ requires board != null; ensures board.isField(\result) &&
 	 * board.isEmptyField(\result);
-	 * 
+	 *
 	 */
 	/**
 	 * Asks the user to input the field where to place the next mark. This is
 	 * done using the standard input/output. \
-	 * 
+	 *
 	 * @param board
 	 *            the game board
 	 * @return the player's chosen field
 	 */
 
 	public int[] determineMove(Board board) {
-		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice (write it in the form 'x y')?\n> ";
+		String prompt = "> " + getName() + " (" + getColor().toString() + ")"
+				+ ", what is your choice (write it in the form 'x y')?\n> ";
 		int[] choice = readInt(prompt, board);
 		boolean valid = board.isField(choice) && board.isEmptyField(choice);
 		while (!valid) {
-			System.out.println("ERROR: chosen field is not a valid choice.");
+			gameView.print("ERROR: chosen field is not a valid choice.");
 			choice = readInt(prompt, board);
 			valid = board.isField(choice) && board.isEmptyField(choice);
 		}
@@ -56,7 +63,7 @@ public class HumanPlayer extends Player {
 	/**
 	 * Writes a prompt to standard out and tries to read an int value from
 	 * standard in. This is repeated until an int value is entered.
-	 * 
+	 *
 	 * @param prompt
 	 *            the question to prompt the user
 	 * @return the first int value which is entered by the user
@@ -69,10 +76,18 @@ public class HumanPlayer extends Player {
 		@SuppressWarnings("resource")
 		Scanner line = new Scanner(System.in);
 		do {
-			System.out.print(prompt);
+			gameView.print(prompt);
 			try (Scanner scannerLine = new Scanner(line.nextLine());) {
 				if (scannerLine.hasNext()) {
 					String in_1 = scannerLine.next();
+					if (in_1.toUpperCase().equals("SWITCH")) {
+						int level = scannerLine.nextInt();
+						gameView.switchLevel(level, this);
+					}
+					if (in_1.toUpperCase().equals("EXIT")) {
+						gameView.print("Ending the game.");
+						gameView.start();
+					}
 					if (scannerLine.hasNext()) {
 						String in_2 = scannerLine.next();
 						if (in_1.matches("\\d+") && in_2.matches("\\d+") && !scannerLine.hasNext()) {
@@ -87,7 +102,7 @@ public class HumanPlayer extends Player {
 			if (board.isField(coordinates)) {
 				intRead = true;
 			} else {
-				System.out.println("ERROR: chosen field is not a valid choice.");
+				gameView.print("ERROR: chosen field is not a valid choice.");
 			}
 		} while (!intRead);
 		int[] coordinates = { x, y, z };

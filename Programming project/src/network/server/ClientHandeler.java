@@ -1,6 +1,6 @@
-package network;
+package network.server;
 
-import network.Interfaces.Connect4Server;
+import network.interfaces.Connect4Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- * @Author Willem Schooltink
- * @Version 1.0.0
- * Is made for every Client on the server, it manages the communication of this client.
+ * @author Willem Schooltink
+ * @version 1.0.0
+ * Is made for every client on the server, it manages the communication of this client.
  */
 public class ClientHandeler extends Thread implements Connect4Server{
 
@@ -108,7 +108,7 @@ public class ClientHandeler extends Thread implements Connect4Server{
             }
 
             if (game != null){
-                leave("Client " + id + " disconnected.");
+                leave("client " + id + " disconnected.");
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -279,6 +279,14 @@ public class ClientHandeler extends Thread implements Connect4Server{
      */
     public void removeFromGame(){
         game = null;
+    }
+
+    /**
+     * Returns the current <code>GameServer</code> of this <code>ClientHandeler</code>.
+     * @return the <code>GameServer</code> of this <code>ClientHandeler</code>.
+     */
+    public GameServer getGameServer(){
+        return game;
     }
 
     /**

@@ -1,7 +1,10 @@
-package network;
+package network.client;
 
 import game.*;
-import network.Interfaces.Connect4Client;
+import game.players.*;
+import game.players.strategies.NaiveStrategy;
+import game.players.strategies.SmartStrategy;
+import network.interfaces.Connect4Client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,8 +13,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- * @Author Willem Schooltink
- * @Version 1.0.0
+ * @author Willem Schooltink
+ * @version 1.0.0
  * Starts the the client for the game. Handles all communication between server and player;
  */
 public class Client extends Thread implements Connect4Client {
@@ -99,7 +102,7 @@ public class Client extends Thread implements Connect4Client {
     }
 
     /**
-     * Starts the operations the Client must do: Sends a HELLO command to the server to be added to the player list.
+     * Starts the operations the client must do: Sends a HELLO command to the server to be added to the player list.
      * After the HELLO it starts listening to the socket for input from the server. This input is evaluated and
      * the client takes action appropriate to the command received.
      */
@@ -147,7 +150,7 @@ public class Client extends Thread implements Connect4Client {
      * Translates and handles the "WELCOME" command.
      * @param line a <code>String</code> with the entire command including its arguments
      */
-    private void welcomeHandler(String line){
+    public void welcomeHandler(String line){
         String[] words = line.split(" ");
         if (words.length == 4 && words[1].matches("\\d+") && words[2].matches("\\d+")
                 && words[3].matches("\\d+")) {
@@ -164,7 +167,7 @@ public class Client extends Thread implements Connect4Client {
      * Translates and handles the "GAME" command.
      * @param line a <code>String</code> with the entire command including its arguments
      */
-    private void gameHandler(String line){
+    public void gameHandler(String line){
         String[] words = line.split(" ");
         if ((words.length == 8) && words[2].matches("\\d+") && words[3].matches("\\d+")
                 && words[4].matches("\\d+") && words[5].matches("\\d+")
@@ -192,7 +195,7 @@ public class Client extends Thread implements Connect4Client {
      * Translates and handles the "GAME_END" command.
      * @param line a <code>String</code> with the entire command including its arguments
      */
-    private void gameEndHandler(String line){
+    public void gameEndHandler(String line){
         String[] words = line.split(" ");
         if (words.length == 2 && words[1].equals(String.valueOf(id))){
             System.out.println("You won");
@@ -204,7 +207,9 @@ public class Client extends Thread implements Connect4Client {
         } else {
             System.out.println("Something went terribly wrong...");
         }
-        board.reset();
+        if(board != null) {
+            board.reset();
+        }
         cmdRequest();
     }
 
@@ -212,7 +217,7 @@ public class Client extends Thread implements Connect4Client {
      * Translates and handles the "MOVE_SUCCESS" command.
      * @param line a <code>String</code> with the entire command including its arguments
      */
-    private void moveSuccessHandler(String line){
+    public void moveSuccessHandler(String line){
         String[] words = line.split(" ");
         if ((words.length == 5) && words[1].matches("\\d+") && words[2].matches("\\d+")
                 && words[3].matches("\\d+") && words[4].matches("\\d+")){
@@ -235,7 +240,7 @@ public class Client extends Thread implements Connect4Client {
      * Translates and handles the "MOVE_SUCCESS" command.
      * @param line a <code>String</code> with the entire command including its arguments
      */
-    private void playerLeftHandler(String line){
+    public void playerLeftHandler(String line){
         String[] words = line.split(" ");
         if (words.length >= 3 && words[1].matches("\\d+")){
             String reason = "";
@@ -295,5 +300,29 @@ public class Client extends Thread implements Connect4Client {
         String command = "REQUEST";
         writer.println(command);
         writer.flush();
+    }
+
+    /**
+     * Returns the id of this client as an int.s
+     * @return an int with the id of this client.
+     */
+    public int getClientId(){
+        return id;
+    }
+
+    /**
+     * Returns a boolean that says wheter this client is an ai or not.
+     * @return true if this client is an ai, false if not.
+     */
+    public boolean getIsAi(){
+        return ai;
+    }
+
+    /**
+     * Returns the <code>Player</code> of this client.
+     * @return the <code>Player</code> of this client.
+     */
+    public Player getPlayer(){
+        return player;
     }
 }

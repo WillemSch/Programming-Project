@@ -1,4 +1,7 @@
-package game;
+package game.players.strategies;
+
+import game.Board;
+import game.Color;
 
 import java.util.ArrayList;
 import java.util.List;

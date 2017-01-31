@@ -1,10 +1,13 @@
-package game;
+package game.tests;
 
+import game.Board;
+import game.Color;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
+
 /**
  * @author willem
  * @version 1.0.0
@@ -114,7 +117,7 @@ public class BoardTest {
     @Test
     public void testQueries(){
         assert (board.getLength() == 4);
-        assert (board.getHeigth() == 4);
+        assert (board.getHeight() == 4);
         assert (board.getWidth() == 4);
         assert (board.getWinLength() == 4);
     }
@@ -171,7 +174,19 @@ public class BoardTest {
 
         assert (copy.getField(new int[]{0,0,0}).equals(color1));
         copy.setField(0,1, color1);
+        copy.setField(0,1, color2);
         assert (copy.getField(new int[]{0,1,0}).equals(color1));
         assert (!board.getField(new int[]{0,1,0}).equals(color1));
+    }
+
+    /**
+     * Tests if none of the toString methods in board throw exceptions.
+     */
+    @Test
+    public void testTostrings(){
+        //should give any exceptions.
+        board.toString();
+        board.toStringLevel(1);
+        board.toStringTop();
     }
 }

@@ -1,5 +1,8 @@
 package game;
 
+import game.players.HumanPlayer;
+import game.players.Player;
+
 public class ConnectFour {
 	public static void main(String[] args) {
 		Player p1 = new HumanPlayer(args[0], Color.RED);

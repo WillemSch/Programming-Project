@@ -1,5 +1,7 @@
 package game;
 
+import game.players.Player;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +12,7 @@ public class Board {
 
 	private int length;
 	private int width;
-	private int heigth;
+	private int height;
 	private int winLength;
 
 	private Player[] players;
@@ -21,11 +23,11 @@ public class Board {
 		this.length = length;
 		this.width = width;
 		if (heigth == -1) {
-			this.heigth = Integer.MAX_VALUE;
+			this.height = Integer.MAX_VALUE;
 		} else {
-			this.heigth = heigth;
+			this.height = heigth;
 		}
-		this.heigth = heigth;
+		this.height = heigth;
 		this.winLength = 4;
 		this.fields = new HashMap<>();
 	}
@@ -34,11 +36,11 @@ public class Board {
 		this.length = length;
 		this.width = width;
 		if (heigth == -1) {
-			this.heigth = Integer.MAX_VALUE;
+			this.height = Integer.MAX_VALUE;
 		} else {
-			this.heigth = heigth;
+			this.height = heigth;
 		}
-		this.heigth = heigth;
+		this.height = heigth;
 		this.winLength = 4;
 		this.players = players;
 		this.fields = new HashMap<>();
@@ -48,9 +50,9 @@ public class Board {
 		this.length = length;
 		this.width = width;
 		if (heigth == -1) {
-			this.heigth = Integer.MAX_VALUE;
+			this.height = Integer.MAX_VALUE;
 		} else {
-			this.heigth = heigth;
+			this.height = heigth;
 		}
 		this.winLength = winLength;
 		this.players = players;
@@ -74,8 +76,8 @@ public class Board {
 		return width;
 	}
 
-	public int getHeigth() {
-		return heigth;
+	public int getHeight() {
+		return height;
 	}
 
 	public int getWinLength() {
@@ -87,7 +89,7 @@ public class Board {
 	}
 
 	public Board deepCopy() {
-		Board copy = new Board(getWidth(),getLength(),getHeigth(),getWinLength(),players);
+		Board copy = new Board(getWidth(),getLength(), getHeight(),getWinLength(),players);
 		for (int[] coord: fields.keySet()){
 		    copy.setField(coord, fields.get(coord));
         }
@@ -98,7 +100,7 @@ public class Board {
 		int x = coordinates[0];
 		int y = coordinates[1];
 		int z = coordinates[2];
-		return (x >= 0 && x < width) && (y >= 0 && y < length) && (z >= 0 && z < heigth);
+		return (x >= 0 && x < width) && (y >= 0 && y < length) && (z >= 0 && z < height);
 	}
 
 	public Color getField(int[] coordinates) {
@@ -121,7 +123,7 @@ public class Board {
 	}
 
 	public boolean isFull() {
-		return fields.size() == length * width * heigth;
+		return fields.size() == length * width * height;
 	}
 
 	public boolean gameOver() {
@@ -189,7 +191,7 @@ public class Board {
 			}
 
 			// Test line over the z axes
-			for (int i = 1; z + i < heigth; i++) {
+			for (int i = 1; z + i < height; i++) {
 				int[] square = { x, y, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -273,7 +275,7 @@ public class Board {
 				}
 			}
 
-			for (int i = 1; x - i >= 0 && z + i < heigth; i++) {
+			for (int i = 1; x - i >= 0 && z + i < height; i++) {
 				int[] square = { x - i, y, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -289,7 +291,7 @@ public class Board {
 			}
 
 			// Test DiagonalUp on y plane
-			for (int i = 1; x + i < width && z + i < heigth; i++) {
+			for (int i = 1; x + i < width && z + i < height; i++) {
 				int[] square = { x + i, y, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -323,7 +325,7 @@ public class Board {
 				}
 			}
 
-			for (int i = 1; y - i >= 0 && z + i < heigth; i++) {
+			for (int i = 1; y - i >= 0 && z + i < height; i++) {
 				int[] square = { x, y - i, z - i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -348,7 +350,7 @@ public class Board {
 				}
 			}
 
-			for (int i = 1; y - i >= 0 && z + i < heigth; i++) {
+			for (int i = 1; y - i >= 0 && z + i < height; i++) {
 				int[] square = { x, y - i, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -373,7 +375,7 @@ public class Board {
 				}
 			}
 
-			for (int i = 1; x - i >= 0 && y + i < length && z + i < heigth; i++) {
+			for (int i = 1; x - i >= 0 && y + i < length && z + i < height; i++) {
 				int[] square = { x - i, y + i, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -389,7 +391,7 @@ public class Board {
 			}
 
 			// Test DiagonalUp on y x plane
-			for (int i = 1; x + i < width && y - i >= 0 && z + i < heigth; i++) {
+			for (int i = 1; x + i < width && y - i >= 0 && z + i < height; i++) {
 				int[] square = { x + i, y - i, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -423,7 +425,7 @@ public class Board {
 				}
 			}
 
-			for (int i = 1; x - i >= 0 && y - i >= 0 && z + i < heigth; i++) {
+			for (int i = 1; x - i >= 0 && y - i >= 0 && z + i < height; i++) {
 				int[] square = { x - i, y - i, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -439,7 +441,7 @@ public class Board {
 			}
 
 			// Test DiagonalUp on x y plane
-			for (int i = 1; x + i < width && y + i < length && z + i < heigth; i++) {
+			for (int i = 1; x + i < width && y + i < length && z + i < height; i++) {
 				int[] square = { x + i, y + i, z + i };
 				if (isUsedField(square) && getField(square).equals(m)) {
 					lineCount++;
@@ -479,43 +481,126 @@ public class Board {
 		return isWinningMove(m);
 	}
 
-	public String toString() {
+	public String toStringTop() {
 		String result = "";
-		String result_2;
+		String result_0 = "  x >\n       ";
+		for (int i = 0; i < width; i++) {
+			result_0 += "    " + i + "     ";
+		}
 		for (int i = 0; i < length; i++) {
-			String result_1 = "+-------+";
+			String result_1 = "      +---------+";
+			String result_2 = "    " + i + " |";
 			for (int j = 1; j < width; j++) {
-				result_1 += "-------+";
+				result_1 += "---------+";
 			}
-			Integer[] coordinates = {0,i,0};
-			if (fields.containsKey(coordinates)) {
-				if (fields.get(coordinates).equals(players[1].getColor())) {
-					result_2 = "|  BLUE |";
-				} else if (fields.get(coordinates).equals(players[0].getColor())) {
-					result_2 = "|  RED  |";
+			for (int j = 0; j < width; j++) {
+				int z;
+				if (getHeightOfField(j,i) == -1) {
+					z = height - 1;
 				} else {
-					result_2 = "|       |";
+					z = getHeightOfField(j, i) - 1;
 				}
-			} else {
-				result_2 = "|       |";
-			}
-			for (int j = 1; j < width; j++) {
-				Integer[] coordinates_2 = {j,i,0};
-				if (fields.containsKey(coordinates_2)) {
-					result_2 = "|       |";
+				int[] coordinates = { j, i, z};
+				if (!isEmptyField(coordinates)) {
+					if (getField(coordinates).equals(Color.BLUE)) {
+						result_2 += " " + z + ": " + getField(coordinates).toString() + " |";
+					} else if (getField(coordinates).equals(Color.RED)) {
+						result_2 += " " + z + ": " + getField(coordinates).toString() + "  |";
+					} else {
+						result_2 += "  UNKOWN |";
+					}
 				} else {
-					result_2 = "|       |";
+					result_2 += "         |";
 				}
 			}
-			result += result_1 + "\n" + result_2 + "\n";
+			result += "\n" + result_1 + "\n" + result_2;
 		}
-		String result_3 = "+-------+";
+		String result_3 = "  ^   +---------+";
 		for (int i = 1; i < width; i++) {
-			result_3 += "-------+";
+			result_3 += "---------+";
 		}
-		result += result_3;
-		return result;
+		result_0 += result + "\n" + result_3 + "\n" + "  y";
+		return result_0;
 	}
+
+	public String toStringLevel(int z) {
+		String result = "";
+		String result_0 = "  x >\n       ";
+		for (int i = 0; i < width; i++) {
+			result_0 += "    " + i + "     ";
+		}
+		for (int i = 0; i < length; i++) {
+			String result_1 = "      +---------+";
+			String result_2 = "    " + i + " |";
+			for (int j = 1; j < width; j++) {
+				result_1 += "---------+";
+			}
+			for (int j = 0; j < width; j++) {
+				int[] coordinates = { j, i, z};
+				if (!isEmptyField(coordinates)) {
+					if (getField(coordinates).equals(Color.BLUE)) {
+						result_2 += " " + z + ": " + getField(coordinates).toString() + " |";
+					} else if (getField(coordinates).equals(Color.RED)) {
+						result_2 += " " + z + ": " + getField(coordinates).toString() + "  |";
+					} else {
+						result_2 += "  UNKOWN |";
+					}
+				} else {
+					result_2 += "         |";
+				}
+			}
+			result += "\n" + result_1 + "\n" + result_2;
+		}
+		String result_3 = "  ^   +---------+";
+		for (int i = 1; i < width; i++) {
+			result_3 += "---------+";
+		}
+		result_0 += result + "\n" + result_3 + "\n" + "  y";
+		return result_0;
+	}
+
+	public String toString(){
+        String result = "";
+        String result_0 = "  x >\n       ";
+        for (int i = 0; i < width; i++) {
+            result_0 += "    " + i + "     ";
+        }
+        for (int i = 0; i < length; i++) {
+            String result_1 = "      +---------+";
+            String result_2 = "    " + i + " |";
+            for (int j = 1; j < width; j++) {
+                result_1 += "---------+";
+            }
+            for(int z = 0; z < height; z++) {
+                for (int j = 0; j < width; j++) {
+                    int[] coordinates = {j, i, z};
+                    if (!isEmptyField(coordinates)) {
+                        if (getField(coordinates).equals(Color.BLUE)) {
+                            result_2 += " " + z + ": " + getField(coordinates).toString() + " |";
+                        } else if (getField(coordinates).equals(Color.RED)) {
+                            result_2 += " " + z + ": " + getField(coordinates).toString() + "  |";
+                        } else {
+                            result_2 += "  UNKOWN |";
+                        }
+                    } else {
+                        result_2 += "         |";
+                    }
+                }
+                if(z != height-1){
+                    result_2 += "\n";
+                    result_2 += "      |";
+                }
+
+            }
+            result += "\n" + result_1 + "\n" + result_2;
+        }
+        String result_3 = "  ^   +---------+";
+        for (int i = 1; i < width; i++) {
+            result_3 += "---------+";
+        }
+        result_0 += result + "\n" + result_3 + "\n" + "  y";
+        return result_0;
+    }
 
 	public void reset() {
 		this.fields = new HashMap<>();
@@ -536,7 +621,7 @@ public class Board {
 	}
 
 	public int getHeightOfField(int x, int y) {
-		for (int i = 0; i < heigth; i++) {
+		for (int i = 0; i < height; i++) {
 			int[] coordinates = { x, y, i };
 			if (isEmptyField(coordinates)) {
 				return i;

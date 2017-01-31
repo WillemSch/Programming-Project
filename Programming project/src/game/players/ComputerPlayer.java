@@ -1,10 +1,19 @@
-package game;
+package game.players;
+
+import game.Board;
+import game.Color;
+import game.players.strategies.NaiveStrategy;
+import game.players.strategies.Strategy;
+import game.ui.GameTUIView;
 
 /**
- * Created by willem on 20-12-16.
+ * @author willem
+ * @version 1.0.0
+ * A computer player for a connect-4 game.
  */
 public class ComputerPlayer extends Player {
     private Strategy strategy;
+    private GameTUIView view;
 
     //@ requires color != null;
     //@ requires strategy != null;
@@ -12,6 +21,7 @@ public class ComputerPlayer extends Player {
     public ComputerPlayer(Color color, Strategy strategy) {
         super("Computer Player", color);
         this.strategy = strategy;
+        view = new GameTUIView();
     }
 
     //@ requires color != null;
@@ -19,6 +29,7 @@ public class ComputerPlayer extends Player {
     public ComputerPlayer(Color color) {
         super("Computer Player", color);
         this.strategy = new NaiveStrategy();
+        view = new GameTUIView();
     }
 
     public Strategy getStrategy() {
@@ -38,7 +49,7 @@ public class ComputerPlayer extends Player {
         int[] choice = strategy.determineMove(board, super.getColor());
         String prompt = "> " + getName() + " (" + getColor().toString() + ")"
                 + ", chooses " + choice + ".";
-        System.out.println(prompt);
+        view.print(prompt);
         return choice;
     }
 }
