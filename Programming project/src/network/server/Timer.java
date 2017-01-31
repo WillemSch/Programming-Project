@@ -31,7 +31,6 @@ public class Timer extends Thread {
                 wait(waitingTime);
                 //if the timer is not inerrupted in the time given it tells the client to leave the game.
                 client.leave("client took too long to respond.");
-                System.out.println("Left");
             } catch (InterruptedException e) {
             }
         }

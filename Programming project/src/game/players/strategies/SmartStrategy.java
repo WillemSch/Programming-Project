@@ -3,9 +3,6 @@ package game.players.strategies;
 import game.Board;
 import game.Color;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Jesper Simon
  * @version 1.0.0
@@ -14,6 +11,16 @@ import java.util.List;
 public class SmartStrategy implements Strategy {
 
     private static final String NAME = "SMART COMPUTER PLAYER";
+
+    private NaiveStrategy naiveStrategy;
+
+    /**
+     * Constructor of SmartStrategy, initiates a NaiveStrategy to get a random move.
+     */
+    public SmartStrategy(){
+        super();
+        naiveStrategy = new NaiveStrategy();
+    }
 
     /**
      * Returns the name of this computer player.
@@ -39,15 +46,12 @@ public class SmartStrategy implements Strategy {
             return coordinate;
         }
 
-
-        System.out.println(color.other());
-
         //checks if the other player can make a winning move
         if ((coordinate = winningMove(color.other(), board)) != null){
             return coordinate;
         }
 
-        return randomMove(board);
+        return randomMove(board, color);
     }
 
     /**
@@ -55,36 +59,8 @@ public class SmartStrategy implements Strategy {
      * @param board The board of the current game.
      * @return an int[] with the coordinates of the move.
      */
-    private int[] randomMove(Board board) {
-        int[] coordinates = {0,0,0};
-        List<Integer> xIndices = new ArrayList<>();
-        List<Integer> yIndices = new ArrayList<>();
-
-        for (int i = 0; i < board.getLength(); i++){
-            xIndices.add(i);
-        }
-
-        for (int i = 0; i < board.getWidth(); i++){
-            yIndices.add(i);
-        }
-
-        for (int i = 0; i < board.getWidth() * board.getLength(); i++){
-            int randomIndex = (int) (Math.random() * xIndices.size());
-            int x = xIndices.get(randomIndex);
-            xIndices.remove(randomIndex);
-
-            randomIndex = (int) (Math.random() * yIndices.size());
-            int y = yIndices.get(randomIndex);
-            yIndices.remove(randomIndex);
-
-            int z = board.getHeightOfField(x, y);
-            coordinates = new int[]{x,y,z};
-
-            if (board.isField(coordinates) && board.isEmptyField(coordinates)){
-                break;
-            }
-        }
-        return coordinates;
+    private int[] randomMove(Board board, Color color) {
+        return naiveStrategy.determineMove(board, color);
     }
 
     /**

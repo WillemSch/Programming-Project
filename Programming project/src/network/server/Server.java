@@ -98,7 +98,6 @@ public class Server extends Thread{
             games.add(newGame);
             waitingClients.remove(1);
             waitingClients.remove(0);
-            System.out.println(newGame);
             newGame.start();
         }
     }

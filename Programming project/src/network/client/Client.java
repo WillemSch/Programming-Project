@@ -69,7 +69,7 @@ public class Client extends Thread implements Connect4Client {
      * @param args A <code>String[]</code> which is used to determine the type of player and server. Arguments: <name> <address> <port>
      */
     public static void main(String[] args) {
-        args = new String[]{"me", "localhost", "4040"};
+        //args = new String[]{"me", "localhost", "4040"};
 
         if (args.length != 3) {
             System.out.println(USAGE);
@@ -94,6 +94,7 @@ public class Client extends Thread implements Connect4Client {
                         client = new Client(server, args[0], 1, false, player);
                         break;
                 }
+                player.setClient(client);
                 client.start();
             } catch (IOException e) {
                 e.printStackTrace();

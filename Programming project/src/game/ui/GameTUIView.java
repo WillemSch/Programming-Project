@@ -16,12 +16,13 @@ import java.util.Scanner;
  * @version 1.0.0
  */
 public class GameTUIView {
-    SmartStrategy ss = new SmartStrategy();
+    private SmartStrategy smartStrategy;
     private Scanner scanner;
     private int length;
     private int width;
     private int height;
     private int winLength;
+    private String name;
 
     private Player player1;
     private Player player2;
@@ -29,6 +30,7 @@ public class GameTUIView {
     private Board board;
 
     public GameTUIView() {
+        smartStrategy = new SmartStrategy();
         scanner = new Scanner(System.in);
         length = 4;
         width = 4;
@@ -39,10 +41,8 @@ public class GameTUIView {
     public void setup() {
         print("Wecome to Connect Four, what is your name?");
         if (scanner.hasNextLine()) {
-            String word;
             if (scanner.hasNext()) {
-                word = scanner.next();
-                player1 = new HumanPlayer(word, Color.RED);
+                name = scanner.next();
                 start();
             }
         }
@@ -51,20 +51,25 @@ public class GameTUIView {
     public void start() {
         print("\nWelcome to Connect Four, this is the main menu, choose a command number from below. \n"
                 + "1. Local_Game \n" + "2. Online_Game \n" + "3. Game_Settings \n" + "4. Exit");
-        while (scanner.hasNextLine()) {
-            String word;
-            if (scanner.hasNext()) {
-                word = scanner.next();
-                if (word.toUpperCase().equals("LOCAL_GAME")) {
-                    localGame();
-                } else if (word.toUpperCase().equals("ONLINE_GAME")) {
-                    onlineGame();
-                } else if (word.toUpperCase().equals("GAME_SETTINGS")) {
-                    gameSettings();
-                } else if (word.toUpperCase().equals("EXIT")) {
-                    break;
+        try {
+            while (scanner != null && scanner.hasNextLine()) {
+                String word;
+                if (scanner.hasNext()) {
+                    word = scanner.next();
+                    if (word.toUpperCase().equals("LOCAL_GAME")) {
+                        localGame();
+                    } else if (word.toUpperCase().equals("ONLINE_GAME")) {
+                        onlineGame();
+                        return;
+                    } else if (word.toUpperCase().equals("GAME_SETTINGS")) {
+                        gameSettings();
+                    } else if (word.toUpperCase().equals("EXIT")) {
+                        break;
+                    }
                 }
             }
+        } catch (IllegalStateException e){
+
         }
         print("The Connect Four menu will now terminate.");
         scanner.close();
@@ -78,8 +83,10 @@ public class GameTUIView {
                 String address = scanner.next();
                 if(scanner.hasNext()){
                     String port = scanner.next();
-                    String[] args = new String[]{player1.getName(), address, port};
+                    String[] args = new String[]{name, address, port};
+                    //scanner.close();
                     Client.main(args);
+                    return;
                 }
             }
         }
@@ -87,25 +94,30 @@ public class GameTUIView {
 
     public void localGame() {
         if (player2 == null) {
+            player1 = new HumanPlayer(name, Color.RED);
             print(player1.getName() + ", want to play against the AI or another human player? (AI/HUMAN)");
             while (scanner.hasNextLine()) {
                 String word;
                 if (scanner.hasNext()) {
                     word = scanner.next();
                     if (word.toUpperCase().equals("AI")) {
-                        player2 = new ComputerPlayer(Color.BLUE, ss);
+                        player2 = new ComputerPlayer(Color.BLUE, smartStrategy);
+                        Player[] players = { player1, player2 };
+                        board = new Board(length, width, height, winLength, players);
+                        Game game = new Game(board);
+                        game.startGame();
                     } else if (word.toUpperCase().equals("HUMAN")) {
                         print("What is the name of the second player?");
-                        while (scanner.hasNextLine()) {
+                        if (scanner.hasNextLine()) {
                             if (scanner.hasNext()) {
                                 word = scanner.next();
                                 player2 = new HumanPlayer(word, Color.BLUE);
-                                Player[] players = { player1, player2 };
-                                board = new Board(length, width, height, winLength, players);
-                                Game game = new Game(board);
-                                game.startGame();
                             }
                         }
+                        Player[] players = { player1, player2 };
+                        board = new Board(length, width, height, winLength, players);
+                        Game game = new Game(board);
+                        game.startGame();
                     }
                 }
             }
@@ -184,7 +196,7 @@ public class GameTUIView {
             if (scanner.hasNext()) {
                 word = scanner.next();
                 if (word.toUpperCase().equals("AI")) {
-                    player = new ComputerPlayer(color, ss);
+                    player = new ComputerPlayer(color, smartStrategy);
                     print("Player " + number + " set to AI.");
                     gameSettings();
                 } else if (word.toUpperCase().equals("HUMAN")) {

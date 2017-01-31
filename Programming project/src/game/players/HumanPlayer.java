@@ -2,6 +2,8 @@ package game.players;
 
 import game.Board;
 import game.Color;
+import game.players.strategies.SmartStrategy;
+import game.players.strategies.Strategy;
 import game.ui.GameTUIView;
 
 import java.util.Scanner;
@@ -13,22 +15,21 @@ import java.util.Scanner;
  */
 public class HumanPlayer extends Player {
 
-	GameTUIView gameView;
-
-	// -- Constructors -----------------------------------------------
+	private GameTUIView gameView;
+    private Strategy strategy;
 
 	/*
-	 * @ requires name != null; requires mark == Color.RED || mark ==
+	 * @ requires name != null; requires color == Color.RED || color ==
 	 * Color.BLUE; ensures this.getName() == name; ensures this.getColor() ==
-	 * mark;
+	 * color;
 	 */
 	/**
 	 * Creates a new human player object.
-	 *
 	 */
 	public HumanPlayer(String name, Color color) {
 		super(name, color);
 		gameView = new GameTUIView();
+		strategy = new SmartStrategy();
 	}
 
 	// -- Commands ---------------------------------------------------
@@ -39,7 +40,7 @@ public class HumanPlayer extends Player {
 	 *
 	 */
 	/**
-	 * Asks the user to input the field where to place the next mark. This is
+	 * Asks the user to input the field where to place the next color. This is
 	 * done using the standard input/output. \
 	 *
 	 * @param board
@@ -73,37 +74,45 @@ public class HumanPlayer extends Player {
 		int x = -1;
 		int y = -1;
 		int z = -1;
+		boolean gotHint = false;
 		@SuppressWarnings("resource")
 		Scanner line = new Scanner(System.in);
 		do {
 			gameView.print(prompt);
-			try (Scanner scannerLine = new Scanner(line.nextLine());) {
-				if (scannerLine.hasNext()) {
-					String in_1 = scannerLine.next();
-					if (in_1.toUpperCase().equals("SWITCH")) {
-						int level = scannerLine.nextInt();
-						gameView.switchLevel(level, this);
-					}
-					if (in_1.toUpperCase().equals("EXIT")) {
-						gameView.print("Ending the game.");
-						gameView.start();
-					}
-					if (scannerLine.hasNext()) {
-						String in_2 = scannerLine.next();
-						if (in_1.matches("\\d+") && in_2.matches("\\d+") && !scannerLine.hasNext()) {
-							x = Integer.parseInt(in_1);
-							y = Integer.parseInt(in_2);
-							z = board.getHeightOfField(x, y);
-						}
-					}
-				}
-			}
+			if (line.hasNext()) {
+                try (Scanner scannerLine = new Scanner(line.nextLine())) {
+                    if (scannerLine.hasNext()) {
+                        String in_1 = scannerLine.next();
+                        if (in_1.toUpperCase().equals("SWITCH")) {
+                            int level = scannerLine.nextInt();
+                            gameView.switchLevel(level, this);
+                        } else if (in_1.toUpperCase().equals("EXIT")) {
+                            gameView.print("Ending the game.");
+                            gameView.start();
+                        } else if (in_1.toUpperCase().equals("HINT")) {
+                            int[] coordinate = strategy.determineMove(board, getColor());
+                            gameView.print("Try this move: " + coordinate[0] + "-" + coordinate[1]);
+                            gotHint = true;
+                        } else if (scannerLine.hasNext()) {
+                            String in_2 = scannerLine.next();
+                            if (in_1.matches("\\d+") && in_2.matches("\\d+") /*&& !scannerLine.hasNext()*/) {
+                                x = Integer.parseInt(in_1);
+                                y = Integer.parseInt(in_2);
+                                z = board.getHeightOfField(x, y);
+                                System.out.println("DEBUG");
+                            }
+                        }
+                    }
+                }
+            }
 			int[] coordinates = { x, y, z };
 			if (board.isField(coordinates)) {
 				intRead = true;
+			} else if(!gotHint){
+				gameView.print("ERROR: Invalid move, try again.");
 			} else {
-				gameView.print("ERROR: chosen field is not a valid choice.");
-			}
+                gotHint = true;
+            }
 		} while (!intRead);
 		int[] coordinates = { x, y, z };
 		return coordinates;

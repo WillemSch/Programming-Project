@@ -96,8 +96,6 @@ public class GameServer extends Thread{
             }
             return true;
         } else {
-            System.out.println(board.isField(coordinates) + "<-- isField");
-            System.out.println(board.isField(coordinates) + "<-- isEmptyField");
             return false;
         }
     }

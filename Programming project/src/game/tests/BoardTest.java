@@ -109,6 +109,15 @@ public class BoardTest {
         assertTrue(board.hasWinner());
         assertTrue(board.isWinner(color1));
         assertFalse(board.isWinner(color2));
+
+        board.reset();
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+        board.setField(0,0,color1);
+        board.setField(0,0,color2);
+
+        //assertFalse(board.hasWinner());
+        assertFalse(board.isWinningMove(color1));
     }
 
     /**

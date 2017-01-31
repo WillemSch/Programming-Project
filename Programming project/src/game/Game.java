@@ -45,6 +45,10 @@ public class Game extends Thread{
 		while (isBusy) {
             update();
             currPlayer.makeMove(board);
+            if (board.isWinningMove(currPlayer.getColor()) || board.isFull()){
+                printResult();
+                break;
+            }
             current = (current + 1) % numberOfPlayers;
             currPlayer = players[current];
         }
@@ -57,24 +61,10 @@ public class Game extends Thread{
 
 	private void printResult() {
 		if (board.hasWinner()) {
-			Player winner = board.isWinner(players[0].getColor()) ? players[0] : players[1];
+			Player winner = board.isWinningMove(players[0].getColor()) ? players[0] : players[1];
 			view.print("Player " + winner.getName() + " (" + winner.getColor().toString() + ") has won!");
 		} else {
 			view.print("Draw. There is no winner!");
 		}
-	}
-
-    /**
-     * Forces the game to crown one person as winner, in case ssomeone gets kicked or disconnected
-     * @param player a <code>Player</code> that will be crowned winner.
-     */
-	public void forceWinner(Player player){
-		isBusy = false;
-        view.print("Player " + player.getName() + " (" + player.getColor().toString() + ") has won!");
-    }
-
-    public void forceDraw(){
-		isBusy = false;
-		view.print("It's a draw, we'll get 'em next time.");
 	}
 }
