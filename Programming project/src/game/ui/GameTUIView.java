@@ -12,8 +12,9 @@ import network.client.Client;
 import java.util.Scanner;
 
 /**
- * @author Jesper Simon
+ * @author Jesper Simon.
  * @version 1.0.0
+ * Prints the TUI for the player, can start a local game, and an online game.
  */
 public class GameTUIView {
     private SmartStrategy smartStrategy;
@@ -29,6 +30,9 @@ public class GameTUIView {
 
     private Board board;
 
+    /**
+     * Constructor of GameTUIView sets up a Scanner and some needed variables.
+     */
     public GameTUIView() {
         smartStrategy = new SmartStrategy();
         scanner = new Scanner(System.in);
@@ -38,6 +42,9 @@ public class GameTUIView {
         winLength = 4;
     }
 
+    /**
+     * Asks the player for his/her name and starts the TUI.
+     */
     public void setup() {
         print("Wecome to Connect Four, what is your name?");
         if (scanner.hasNextLine()) {
@@ -48,6 +55,9 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * Starts the TUI nd listens for inputs.
+     */
     public void start() {
         print("\nWelcome to Connect Four, this is the main menu, choose a command number from below. \n"
                 + "1. Local_Game \n" + "2. Online_Game \n" + "3. Game_Settings \n" + "4. Exit");
@@ -76,6 +86,9 @@ public class GameTUIView {
 
     }
 
+    /**
+     * Starts an client with the given ip & port.
+     */
     public void onlineGame() {
         print("Please specify an ip-address and port below:");
         while (true){
@@ -84,7 +97,6 @@ public class GameTUIView {
                 if(scanner.hasNext()){
                     String port = scanner.next();
                     String[] args = new String[]{name, address, port};
-                    //scanner.close();
                     Client.main(args);
                     return;
                 }
@@ -92,6 +104,9 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * Starts a local game, asks if the player wants a Human or AI opponent.
+     */
     public void localGame() {
         if (player2 == null) {
             player1 = new HumanPlayer(name, Color.RED);
@@ -129,6 +144,9 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * Opens the game settings menu in the tui and listens for input.
+     */
     public void gameSettings() {
         print(
                 "\nWelcome to the Game Settings menu, here you can change the game settings for a local game.\n"
@@ -150,6 +168,9 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * Sets up a board with the given dimension, via the TUI.
+     */
     public void setBoard() {
         print("What are the width, length and height of the board? (write in the from 'x,y,z')");
         while (scanner.hasNextLine()) {
@@ -171,6 +192,9 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * Sets up the players with command gotten through the TUI.
+     */
     public void setPlayers() {
         print("\nWhich player do you want to set? (Player1 / Player2)");
         while (scanner.hasNextLine()) {
@@ -188,6 +212,11 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * Sets up a player with the given color, number indicates which player is set up.
+     * @param number an int which says which player needs to be set up.
+     * @param color the Color of the player.
+     */
     public void setPlayer(int number, Color color) {
         Player player = null;
         while (scanner.hasNextLine()) {
@@ -222,6 +251,9 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * Asks for winning conditions and applies them.
+     */
     public void setWinningConditions() {
         print("What is the winning length of a line?");
         while (scanner.hasNextLine()) {
@@ -240,6 +272,9 @@ public class GameTUIView {
         }
     }
 
+    /**
+     * goes back to the main part of the TUI.
+     */
     public void back() {
         start();
     }
@@ -250,14 +285,25 @@ public class GameTUIView {
 
     }
 
+    /**
+     * Updates the game situation.
+     */
     public void update() {
         print("\ncurrent game situation: \n\n" + board.toStringTop() + "\n");
     }
 
+    /**
+     * Prints a message to the console.s
+     * @param message a <code>String</code> with the message you wan to print.
+     */
     public void print(String message) {
         System.out.println(message);
     }
 
+    /**
+     * The main void of the TUI is tarts an TUI.
+     * @param args
+     */
     public static void main(String[] args) {
         GameTUIView game = new GameTUIView();
         game.setup();

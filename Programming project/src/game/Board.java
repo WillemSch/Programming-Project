@@ -21,46 +21,72 @@ public class Board {
 
 	private Color lastColor;
 
-	public Board(int width, int length, int heigth) {
+	/**
+	 * Constructs a board with the given width, length and height.
+	 * @param width an <code>int</code> with the wanted width.
+	 * @param length an <code>int</code> with the wanted length.
+	 * @param height an <code>int</code> with the wanted height.
+	 */
+	public Board(int width, int length, int height) {
 		this.length = length;
 		this.width = width;
-		if (heigth == -1) {
+		if (height == -1) {
 			this.height = Integer.MAX_VALUE;
 		} else {
-			this.height = heigth;
+			this.height = height;
 		}
-		this.height = heigth;
+		this.height = height;
 		this.winLength = 4;
 		this.fields = new HashMap<>();
 	}
 
-	public Board(int width, int length, int heigth, Player[] players) {
+    /**
+     * Constructs a board with the given width, length and height.
+     * @param width an <code>int</code> with the wanted width.
+     * @param length an <code>int</code> with the wanted length.
+     * @param height an <code>int</code> with the wanted height.
+     * @param players an <code>Player[]</code> with the players of the game.
+     */
+	public Board(int width, int length, int height, Player[] players) {
 		this.length = length;
 		this.width = width;
-		if (heigth == -1) {
+		if (height == -1) {
 			this.height = Integer.MAX_VALUE;
 		} else {
-			this.height = heigth;
+			this.height = height;
 		}
-		this.height = heigth;
+		this.height = height;
 		this.winLength = 4;
 		this.players = players;
 		this.fields = new HashMap<>();
 	}
 
-	public Board(int width, int length, int heigth, int winLength, Player[] players) {
+    /**
+     * Constructs a board with the given width, length and height.
+     * @param width an <code>int</code> with the wanted width.
+     * @param length an <code>int</code> with the wanted length.
+     * @param height an <code>int</code> with the wanted height.
+     * @param winLength an <code>int</code> with the wanted win length.
+     * @param players an <code>Player[]</code> with the players of the game.
+     */
+	public Board(int width, int length, int height, int winLength, Player[] players) {
 		this.length = length;
 		this.width = width;
-		if (heigth == -1) {
+		if (height == -1) {
 			this.height = Integer.MAX_VALUE;
 		} else {
-			this.height = heigth;
+			this.height = height;
 		}
 		this.winLength = winLength;
 		this.players = players;
 		this.fields = new HashMap<>();
 	}
 
+    /**
+     * Checks if a given field is used.
+     * @param coordinates an <code>int[]</code> with the coordinates of the field.
+     * @return true if the field is empty, false if not.
+     */
 	public boolean isUsedField(int[] coordinates){
 	    for (int[] i : fields.keySet()){
             if(Arrays.equals(i, coordinates)){
@@ -70,26 +96,50 @@ public class Board {
         return false;
     }
 
+    /**
+     * Gets the length of this Board.
+     * @return an <code>int</code> representing the length of this Board.
+     */
 	public int getLength() {
 		return length;
 	}
 
+    /**
+     * Gets the width of this Board.
+     * @return an <code>int</code> representing the width of this Board.
+     */
 	public int getWidth() {
 		return width;
 	}
 
+    /**
+     * Gets the height of this Board.
+     * @return an <code>int</code> representing the height of this Board.
+     */
 	public int getHeight() {
 		return height;
 	}
 
+    /**
+     * Gets the win length of this Board.
+     * @return an <code>int</code> representing the win length of this Board.
+     */
 	public int getWinLength() {
 		return winLength;
 	}
 
+    /**
+     * gets the players of this game in an array.
+     * @return an <code>Player[]</code> with the current players.
+     */
 	public Player[] getPlayers() {
 		return players;
 	}
 
+    /**
+     * Makes a deep copy of this Board.
+     * @return a <code>Board</code> that is exactly the same as this one.
+     */
 	public Board deepCopy() {
 		Board copy = new Board(getWidth(),getLength(), getHeight(),getWinLength(),players);
 		for (int[] coord: fields.keySet()){
@@ -98,6 +148,11 @@ public class Board {
 		return copy;
 	}
 
+    /**
+     * Checks if a given field exists.
+     * @param coordinates an <code>int[]</code> with the coordinates of the field.
+     * @return true if the field exists, false if not.
+     */
 	public boolean isField(int[] coordinates) {
 		int x = coordinates[0];
 		int y = coordinates[1];
@@ -105,6 +160,11 @@ public class Board {
 		return (x >= 0 && x < width) && (y >= 0 && y < length) && (z >= 0 && z < height);
 	}
 
+    /**
+     * Returns the color of a given field.
+     * @param coordinates an <code>int[]</code> with the coordinates of the field.
+     * @return the Color of the field.
+     */
 	public Color getField(int[] coordinates) {
 		for (int[] i : fields.keySet()){
 			if(Arrays.equals(i, coordinates)){
@@ -115,6 +175,11 @@ public class Board {
 		return color;
 	}
 
+    /**
+     * Checks if a given field is empty.
+     * @param coordinates an <code>int[]</code> with the coordinates of the field.
+     * @return true if the field is empty, false if not.
+     */
 	public boolean isEmptyField(int[] coordinates) {
         for (int[] i : fields.keySet()){
             if(Arrays.equals(i, coordinates)){
@@ -124,14 +189,27 @@ public class Board {
         return true;
 	}
 
+    /**
+     * Checks if the board is full.
+     * @return true if all fields are used, false if not.
+     */
 	public boolean isFull() {
 		return fields.size() == length * width * height;
 	}
 
+    /**
+     * Checks if the game is over, either draw or has a winner.
+     * @return true if this game is over, false if not.
+     */
 	public boolean gameOver() {
 		return (this.isFull() || this.hasWinner());
 	}
 
+    /**
+     * Checks if the last move was a winning move.
+     * @param color The Color it is going to check for.
+     * @return true if the move was a winning move, false if not.
+     */
 	public boolean isWinningMove(Color color) {
 		if (lastMove.length == 0 || lastColor != color) {
 			return false;
@@ -469,6 +547,10 @@ public class Board {
 		}
 	}
 
+    /**
+     * Checks if the game haas a winner.
+     * @return true if there is a winner, fallse if not.
+     */
 	public boolean hasWinner() {
 	    Color[] colors = {Color.BLUE,Color.RED};
         for (Color color : colors) {
@@ -479,10 +561,19 @@ public class Board {
 		return false;
 	}
 
+    /**
+     * Checks if a given color is the winner.
+     * @param color the Color that needs to be checked.
+     * @return true if the given Color is a winner, false if not.
+     */
 	public boolean isWinner(Color color) {
 		return isWinningMove(color);
 	}
 
+    /**
+     * Returns an overview of the board, seen from the top.
+     * @return a <code>String</code> that represents the board.
+     */
 	public String toStringTop() {
 		String result = "";
 		String result_0 = "  x >\n       ";
@@ -525,6 +616,11 @@ public class Board {
 		return result_0;
 	}
 
+    /**
+     * Returns an overview of a slice of the board.
+     * @param z an <code>int</code> saying which height the player wants to view.
+     * @return a <code>String</code> that represents the board.
+     */
 	public String toStringLevel(int z) {
 		String result = "";
 		String result_0 = "  x >\n       ";
@@ -561,6 +657,10 @@ public class Board {
 		return result_0;
 	}
 
+    /**
+     * Returns an overview of the board. Only use with small heights.
+     * @return a <code>String</code> that represents the board.
+     */
 	public String toString(){
         String result = "";
         String result_0 = "  x >\n       ";
@@ -604,10 +704,19 @@ public class Board {
         return result_0;
     }
 
+    /**
+     * Resets this Board, and all its values.
+     */
 	public void reset() {
 		this.fields = new HashMap<>();
 	}
 
+    /**
+     * Sets the given field to the given color.
+     * @param coordinates an <code>int[]</code> with the coordinates of the field.
+     * @param color the <code>Color</code> of the player making the move.
+     * @return true if the move was successful, false if not.
+     */
 	public boolean setField(int[] coordinates, Color color) {
 		lastMove = coordinates;
 		fields.put(coordinates, color);
@@ -615,6 +724,13 @@ public class Board {
 		return isUsedField(coordinates);
 	}
 
+    /**
+     * Sets the given field to the given color.
+     * @param x an <code>int</code> with the x-coordinate of the field.
+     * @param y an <code>int</code> with the x-coordinate of the field.
+     * @param color the <code>Color</code> of the player making the move.
+     * @return true if the move was successful, false if not.
+     */
 	public boolean setField(int x, int y, Color color) {
 		int z = getHeightOfField(x, y);
 		int[] coordinates = { x, y, z };
@@ -624,6 +740,12 @@ public class Board {
 		return isUsedField(coordinates);
 	}
 
+    /**
+     * Returns the corresponding z value of given x-y coordinates.
+     * @param x an <code>int</code> with the x-coordinate of the field.
+     * @param y an <code>int</code> with the y-coordinate of the field.
+     * @return an <code>int</code> with the z-coordinate of the field, -1 if not valid.
+     */
 	public int getHeightOfField(int x, int y) {
 		for (int i = 0; i < height; i++) {
 			int[] coordinates = { x, y, i };
